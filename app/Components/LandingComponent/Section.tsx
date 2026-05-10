@@ -1,11 +1,39 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Hero, AboutMe, Contact, Footer, Project, Skills } from ".";
-
 import { Header } from "../layout";
 import { LeftLine, Rightline } from "../global";
+import { useUser } from "@/Context/UserInfoContext";
+import {
+  about_Type,
+  bio_Type,
+  category_Type,
+  projects_Type,
+  skills_Type,
+  social_Type,
+} from "@/types/types";
 
-export default function Section() {
+type landingProps = {
+  user_id: string;
+  projectsData: projects_Type[];
+  categoriesData: category_Type[];
+  toolsData: skills_Type[];
+  tecnologyiesData: skills_Type[];
+  socialData: social_Type;
+  bioData: bio_Type;
+  aboutData: about_Type;
+};
+
+export default function Section({
+  user_id,
+  projectsData,
+  categoriesData,
+  toolsData,
+  tecnologyiesData,
+  socialData,
+  bioData,
+  aboutData,
+}: landingProps) {
   const [active, setActive] = useState("hero");
 
   useEffect(() => {
@@ -24,29 +52,36 @@ export default function Section() {
     return () => observer.disconnect();
   }, []);
 
+  const { userInfo } = useUser();
+  const isOwner = userInfo && userInfo.user_id === user_id;
   return (
     <div className="relative ">
       <LeftLine />
       <Rightline />
 
       <div id="#hero" className="observe-section">
-        <Header active={active} />
+        <Header data={socialData} active={active} />
       </div>
 
       <div id="#hero" className="observe-section">
-        <Hero />
+        <Hero data={bioData} />
       </div>
 
       <div id="#project" className="observe-section">
-        <Project />
+        <Project
+          user_id={user_id}
+          isOwner={isOwner}
+          projectsData={projectsData}
+          categoriesData={categoriesData}
+        />
       </div>
 
       <div id="#skills" className="observe-section">
-        <Skills />
+        <Skills toolsData={toolsData} tecnologyiesData={tecnologyiesData} />
       </div>
 
       <div id="#about" className="observe-section">
-        <AboutMe />
+        <AboutMe data={aboutData} />
       </div>
 
       <div id="#contact" className="observe-section">

@@ -1,0 +1,210 @@
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { ParticlesBasic } from "../Components/global";
+import z from "zod";
+import { LoginSchema } from "@/Schema/authSchema";
+import ErrorSchema from "../(Admin)/components/Error/ErrorSchema";
+import { useRouter } from "next/navigation";
+import { motion, easeOut } from "framer-motion";
+import { IoMdReturnRight } from "react-icons/io";
+import { useReqStatus } from "@/hook/ui/useReqStatus";
+import { useToast } from "@/hook/ui/useToast";
+import ToastError from "../(Admin)/components/Error/ToastError";
+
+type LoginData_Type = {
+  email: string | null;
+  password: string | null;
+};
+
+type loginInfer = z.infer<typeof LoginSchema>;
+
+const container = {
+  hidden: {},
+  show: {
+    transotion: {
+      staggerChildren: 0.4,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: -50 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: easeOut,
+    },
+  },
+};
+
+const form = {
+  hidden: { opacity: 0, x: 100 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.4,
+      ease: easeOut,
+    },
+  },
+};
+
+export default function Login() {
+  const router = useRouter();
+
+  const [loginData, setLoginData] = useState<LoginData_Type>({
+    email: "",
+    password: "",
+  });
+  const [errorSchema, setErrorSchema] = useState<
+    Partial<Record<keyof loginInfer, string>>
+  >({});
+
+  /* api operations */
+  const { status, loading, fail, success } = useReqStatus();
+  const { show, message } = useToast();
+  /* api operations */
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (status.loading) return;
+
+    const result = LoginSchema.safeParse(loginData);
+    if (!result.success) {
+      const fieldError: typeof errorSchema = {};
+      result.error.issues.forEach((err) => {
+        fieldError[err.path[0] as keyof loginInfer] = err.message;
+      });
+      return;
+    }
+    setErrorSchema({});
+    loading();
+
+    //now we need to send user data to server side to create cookies;
+    const res = await fetch("/api/login", {
+      method: "post",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: loginData.email,
+        password: loginData.password,
+      }),
+    });
+
+    const resultFetch = await res.json();
+
+    if (!res.ok) {
+      console.log(resultFetch.error);
+      fail();
+      show("Somthing went error , please try again!");
+      return;
+    }
+
+    success();
+    show("Login Successfully.");
+    setLoginData({
+      email: "",
+      password: "",
+    });
+
+    router.replace("/Admin/overview");
+    router.refresh();
+  };
+
+  return (
+    <ParticlesBasic>
+
+      {message && <ToastError message={message}/>}
+      <div className=" h-screen flex flex-col items-center justify-center ">
+        <div className="absolute top-5 right-5 text-white text-3xl bg-blue-600/20 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer hover:scale-105">
+          <Link href="/">
+            <IoMdReturnRight />
+          </Link>
+        </div>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="relative text-white text-center space-y-4 mb-10 "
+        >
+          <motion.h1
+            variants={item}
+            initial="hidden"
+            animate="show"
+            className="font-semibold text-3xl max-w-md md:max-w-lg  "
+          >
+            Welecome back
+          </motion.h1>
+
+          <motion.p
+            variants={item}
+            initial="hidden"
+            animate="show"
+            className="text-sm text-gray-400 max-w-xs m-auto md:max-w-lg "
+          >
+            Continue building and managing your portfolio in seconds.
+          </motion.p>
+          <div className="absolute inset-0 shadow-md shadow-blue-600 bg-blue-600/20 blur-2xl" />
+        </motion.div>
+
+        <motion.div
+          variants={form}
+          initial="hidden"
+          animate="show"
+          className="bg-black/50  rounded-md p-5 md:w-1/2"
+        >
+          <h1 className="text-white/90 text-center text-2xl font-semibold">
+            Login Now
+          </h1>
+          <form
+            onSubmit={handleLogin}
+            className=" flex flex-col gap-2 p-5 rounded-xl"
+          >
+            <ErrorSchema errorSchema={errorSchema.email!} />
+            <input
+              value={loginData.email!}
+              onChange={(e) =>
+                setLoginData((prev) => ({ ...prev, email: e.target.value }))
+              }
+              type="email"
+              placeholder="Enter Your Email.."
+              className="bg-gray-400/30  text-white p-2  rounded-md outline-none"
+            />
+            <ErrorSchema errorSchema={errorSchema.password!} />
+            <input
+              value={loginData.password!}
+              onChange={(e) =>
+                setLoginData((prev) => ({ ...prev, password: e.target.value }))
+              }
+              type="password"
+              placeholder="Enter Your Password"
+              className="bg-gray-400/30  text-white p-2  rounded-md outline-none"
+            />
+            <button
+              type="submit"
+              className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700"
+            >
+              {status.loading ? "wait..." : "Login Now"}
+            </button>
+            <p className="text-center text-sm text-gray-500">
+              Dont have an account?{" "}
+              <Link
+                href="/signup"
+                className="text-blue-600 cursor-pointer hover:underline"
+              >
+                Sign Up
+              </Link>
+            </p>
+          </form>
+        </motion.div>
+      </div>
+    </ParticlesBasic>
+  );
+}
