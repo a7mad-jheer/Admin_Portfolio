@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ImCancelCircle } from "react-icons/im";
 import { bioSchema } from "@/Schema/authSchema";
 import z from "zod";
-import NProgress from "nprogress";
 import { useUser } from "@/Context/UserInfoContext";
 import ErrorSchema from "../Error/ErrorSchema";
 import { useUpload } from "@/hook/api/useUpload";
@@ -119,12 +118,10 @@ export const Bio = () => {
     if (!userInfo) {
       console.log("user_id is null");
       fail();
-      NProgress.done();
       return;
     }
 
     loading();
-    NProgress.start();
 
     const imageName = `${Date.now()}-${imageFile!.name}`;
 
@@ -136,7 +133,6 @@ export const Bio = () => {
 
     if (uploadError) {
       console.log("there is error when upload image");
-      NProgress.done();
       fail();
       show("Failed to load image. Please try again.");
       return;
@@ -157,13 +153,11 @@ export const Bio = () => {
       console.log("there is error when insert data => ", bioError);
       fail();
       show("Failed to update bio. Please try again.")
-      NProgress.done();
       return;
     }
 
     success();
     show("Bio updated successfully.");
-    NProgress.done();
     setBio({
       fullName: "",
       jobTitle: "",
@@ -175,7 +169,7 @@ export const Bio = () => {
   };
 
   return (
-    <div className="">
+    <div className="h-full">
 
     {message && (
       <ToastError message={message}/>
@@ -183,7 +177,7 @@ export const Bio = () => {
 
       <form
         onSubmit={handleOnSubmit}
-        className="text-center my-5 bg-zinc-900 p-2 rounded-md"
+        className="text-center my-5 bg-zinc-900 p-2 rounded-md h-full flex flex-col gap-5"
       >
         <h1 className="p-2 text-2xl font-semibold mb-10 border-b-2 border-gray-700">
           Profile Setting
@@ -264,7 +258,7 @@ export const Bio = () => {
 
         <button
           type="submit"
-          className="transfom duration-200 bg-[hsl(154.9_100%_19.22%)] hover:bg-[hsl(154.9_100%_23.22%)] border border-gray-700 w-full p-2  rounded-md"
+          className="mt-auto transfom duration-200 bg-[hsl(154.9_100%_19.22%)] hover:bg-[hsl(154.9_100%_23.22%)] border border-gray-700 w-full p-2  rounded-md"
         >
           {status.loading ? "saving..." : "Save"}
         </button>

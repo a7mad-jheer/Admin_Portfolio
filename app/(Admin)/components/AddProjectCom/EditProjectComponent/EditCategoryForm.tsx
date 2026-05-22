@@ -1,23 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import NProgress from "nprogress";
 import ToastError from "../../Error/ToastError";
 import { useUpdateData } from "@/hook/api/useUpdateData";
 import { useUser } from "@/Context/UserInfoContext";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
+import { category_Type } from "@/types/types";
+
 
 
 
 type formProps = {
   editSelectedValue : number | null,
   setEditClicked : React.Dispatch<React.SetStateAction<boolean>>,
-  updateCategory : (id : number | null , name : string) => void
+  onEditCategory : (data : category_Type) => void;
 }
 
 
-export const EditCategoryForm = ({setEditClicked  , editSelectedValue , updateCategory} : formProps) => {
+export const EditCategoryForm = ({setEditClicked  , editSelectedValue , onEditCategory} : formProps) => {
 
   const [inputValue , setInputValue] = useState<string>("")
 
@@ -41,7 +42,6 @@ export const EditCategoryForm = ({setEditClicked  , editSelectedValue , updateCa
 
 
     loading();
-    NProgress.start();
 
     const {data , error} = await updateData("categories" , {name : inputValue} , [{column : "id" , value : editSelectedValue}] , true)
     
@@ -49,15 +49,13 @@ export const EditCategoryForm = ({setEditClicked  , editSelectedValue , updateCa
       console.log("there is problem when upadate value from supabase");
       fail();
       show("Something went wrong while updating the category.")
-      NProgress.done();
       return;
     }
 
     success();
     show("Category updated successfully.")
-    NProgress.done();
     console.log(data);
-    updateCategory(data.id , data.name);
+    onEditCategory(data);
     setInputValue("");
     setEditClicked(prev => !prev);
     setEditClicked(false);

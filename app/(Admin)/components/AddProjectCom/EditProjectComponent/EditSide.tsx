@@ -1,23 +1,23 @@
 "use client";
 import { SetStateAction, useEffect, useState } from "react";
 import { MdOutlineCancel } from "react-icons/md";
-import z, { object } from "zod";
+import z from "zod";
 import { EditProjects } from "@/Schema/authSchema";
 import { useUpload } from "@/hook/api/useUpload";
 import { useGetImageUrl } from "@/hook/api/useGetImageUrl";
 import { useUpdateData } from "@/hook/api/useUpdateData";
 import { useSelectData } from "@/hook/api/useSelectData";
 import { useLockScroll } from "@/hook/ui/useLockScroll";
-import { useUser } from "@/Context/UserInfoContext";
 import AddImage from "../../Global/AddImage";
 import ErrorSchema from "../../Error/ErrorSchema";
 import FormAction from "../../Global/FormAction";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
 import ToastError from "../../Error/ToastError";
+import { category_Type } from "@/types/types";
 
 type ProjectEditType = {
-  id: string;
+  id: number | null;
   Name: string;
   Description: string;
   Url: string;
@@ -26,25 +26,21 @@ type ProjectEditType = {
 type project_Type = {
   categoryId: number | null;
   description: string | null;
-  id: string | null;
+  id: number | null;
   image: string | null;
   name: string | null;
   url: string | null;
 };
 
-type Category_Type = {
-  name: string;
-  id: number | null;
-  user_id: string;
-};
+
 
 type props = {
   showEdit: boolean;
   setShowEdit: React.Dispatch<SetStateAction<boolean>>;
   categoryId: number | null;
-  projectId: string | null;
+  projectId: number | null;
   onEdit: (data: project_Type) => void;
-  serverCategories : Category_Type[];
+  categories : category_Type[];
 };
 
 type inputKeys = "Name" | "Description" | "Url";
@@ -62,13 +58,12 @@ export const EditSide = ({
   setShowEdit,
   categoryId,
   projectId,
-  
   onEdit,
-  serverCategories
+  categories
 }: props) => {
   /* Start State */
   const [projectEdit, setProjectEdit] = useState<ProjectEditType>({
-    id: "",
+    id: null,
     Name: "",
     Description: "",
     Url: "",
@@ -87,6 +82,8 @@ export const EditSide = ({
   const { status, loading, fail, success } = useReqStatus();
   const { show, message } = useToast();
 
+
+
   /* Start Function */
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,13 +91,15 @@ export const EditSide = ({
     setProjectEdit((prev) => ({ ...prev, [name]: value }));
   };
 
+
   /* upload edited project Data  */
   const handleFormEdit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (status.loading) return;
-
     loading();
+
+    
 
     const result = EditProjects.safeParse(projectEdit);
     if (!result.success) {
@@ -109,6 +108,8 @@ export const EditSide = ({
         fieldError[err.path[0] as keyof projectInfer] = err.message;
       });
       setErrorSchema(fieldError);
+          console.log("save is arrive after the schema" , fieldError)
+
       fail();
       return;
     }
@@ -119,7 +120,7 @@ export const EditSide = ({
 
     if (imageFile) {
       const imageName = `${Date.now()}-${imageFile.name}`;
-      console.log(imageFile);
+      console.log("if add a new image file => " , imageFile);
 
       const { error: uploadError } = await uploadImage(
         "image",
@@ -137,6 +138,7 @@ export const EditSide = ({
       const { data: getUrl } = await getImageUrl("image", imageName);
       setImageUrl(getUrl.publicUrl);
       finalImageUrl = getUrl.publicUrl;
+      setImageUrl(getUrl.publicUrl)
     }
 
     const { error: updateError, data: updatedData } = await updateData(
@@ -147,29 +149,36 @@ export const EditSide = ({
         url: projectEdit.Url,
         image: finalImageUrl!,
       },
-      [{ column: "id", value: projectId }],
+      [{ column: "id", value: projectId }] , true,
     );
 
     if (updateError) {
-      console.log("there is error when update Data", updateData);
+      console.log("there is error when update Data", updateError);
       fail();
       show("Something went wrong while updating the project.");
       return;
     }
 
+    console.log("here is updated data from supabase in 161 =>" , updatedData)
+    if(!updatedData){
+      show("Somthing whent wrong! , please try again.");
+      fail();
+      return;
+    };
+
     success();
+    setShowEdit(false);
     show("Project Edited Successfully");
     onEdit(updatedData);
     setProjectEdit((prev) => ({
       ...prev,
-      id: "",
+      id: null,
       Name: "",
       Description: "",
       Url: "",
     }));
     setImageUrl(null);
     setImageFile(null);
-    setShowEdit(false);
   };
 
 
@@ -216,15 +225,15 @@ export const EditSide = ({
 
   useEffect(() => {
     const extractionCategoryName = () => {
-      if(!serverCategories) return;
+      if(!categories) return;
 
-    const categoryArray = serverCategories.filter((cat) => cat.id === categoryId)
-      const catName = categoryArray[0].name;
+    const categoryArray = categories.filter((cat) => cat.id === categoryId)
+      const catName = categoryArray[0]?.name;
       setCategoryName(catName);
     }
 
     extractionCategoryName()
-  },[categoryId , serverCategories])
+  },[categoryId , categories])
 
   /******End Function *******/
 
@@ -243,7 +252,6 @@ export const EditSide = ({
       <div
         className={`transform  transition-transform duration-700 ease-in-out fixed  scroll-auto z-50 top-0 right-0 w-full md:w-[40%]  h-screen ${showEdit ? "translate-x-0 " : "translate-x-full"} bg-zinc-900 text-white `}
       >
-        {showEdit && (
           <div className="w-full h-full  overflow-y-auto">
             <div className="p-3 border-b border-gray-800 flex items-center justify-between font-semibold">
               <h1>Update Project name form {categoryName ?? "Category Name"}</h1>
@@ -258,6 +266,7 @@ export const EditSide = ({
             <div className="p-4 font-semibold">
               <h1 className="my-5">General</h1>
 
+              {/* get image file from here */}
               <AddImage
                   onAddImageFile={(imageFileEdit) =>
                   handleAddImage(imageFileEdit)
@@ -294,11 +303,13 @@ export const EditSide = ({
                   row={true}
                   onCancel={() => setShowEdit(false)}
                   status={status}
+                  
                 />
+
+
               </form>
             </div>
           </div>
-        )}
       </div>
       {showEdit && (
         <div className="fixed z-40 top-0 left-0 bg-black/50 w-full h-screen backdrop-blur-md"></div>

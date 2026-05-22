@@ -57,7 +57,7 @@ export const Techonoloies = ({serverTechnologies , user_id} : props) => {
           <p className="text-xl mb-2 font-semibold text-gray-300">Add Technologies</p>
 
           <AddSkillsForm
-          user_id = {user_id}
+            user_id = {user_id}
             supabaseTableTitle="technologies"
             onAdd={(addedData) => handleAddTechnology(addedData)}
           />

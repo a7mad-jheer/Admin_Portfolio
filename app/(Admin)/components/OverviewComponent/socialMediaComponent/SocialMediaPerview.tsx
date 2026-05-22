@@ -11,6 +11,7 @@ import DrawerOverlay from "../../Global/DrawerOverlay";
 import SocialMediaUrl from "../../SettingComponent/SocialMediaUrl";
 import { FaPlus } from "react-icons/fa";
 import { SocialMediaCard } from "./SocialMediaCard";
+import { MdEdit } from "react-icons/md";
 
 type socialMediaType = {
   id: number | null;
@@ -82,12 +83,17 @@ export const SocialMediaPerview = ({ socialSupabase, user_id }: props) => {
     setDeleteClick(false);
   };
 
-  const handleNewEdit = (data: string) => {
-    setSocialData((prev) => ({ ...prev, [selectedLink]: data }));
+  const onEditClick = () => {
+    setShowAdd(true)
   };
 
+  const handleUpdateUrl = (data : socialMediaType) => {
+    setSocialData(data);
+    setShowAdd(false)
+  }
+
   return (
-    <div className="relative ">
+    <div className="relative h-full">
       {message && <ToastError message={message} />}
 
       <ConfirmDelete
@@ -108,12 +114,12 @@ export const SocialMediaPerview = ({ socialSupabase, user_id }: props) => {
         title="Social Media"
         description="Add Social Media"
       >
-        <SocialMediaUrl />
+        <SocialMediaUrl user_id={user_id}  onUpdate = {(data) => {handleUpdateUrl(data)}}/>
       </DrawerOverlay>
 
       {socialData.id === null ? (
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl my-5 font-semibold">Social Media Links</h1>
+        <div className="flex items-center gap-5 mt-5 ">
+          <h1 className="text-xl  font-semibold">Social Media Links</h1>
           <span
             onClick={() => setShowAdd(true)}
             className="text-white/70 bg-black/40 h-9 w-9 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all duration-200 hover:scale-110 cursor-pointer "
@@ -122,15 +128,22 @@ export const SocialMediaPerview = ({ socialSupabase, user_id }: props) => {
           </span>
         </div>
       ) : (
-        <h1 className="text-xl my-5 font-semibold">Social Media Links</h1>
+        <div className="flex items-center gap-5 mt-5  ">
+          <h1 className="text-xl  font-semibold">Social Media Links</h1>
+          <span
+            onClick={onEditClick}
+            className="text-white/70 bg-black/40 h-9 w-9 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-200 hover:scale-110 cursor-pointer "
+          >
+            <MdEdit />
+          </span>
+        </div>
       )}
 
-      <SocialMediaCard
-        data={socialData}
-        selectedValue={selectedLink}
-        setSelectedValue={setSelectedLink}
-        onAdd={() => handleNewEdit}
-      />
+      <SocialMediaCard data={socialData} />
+
+      {showAdd && (
+        <div className="fixed z-40 top-0 left-0 bg-black/50 w-full h-screen backdrop-blur-md"></div>
+      )}
     </div>
   );
 };

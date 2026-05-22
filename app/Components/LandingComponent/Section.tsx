@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Hero, AboutMe, Contact, Footer, Project, Skills } from ".";
 import { Header } from "../layout";
-import { LeftLine, Rightline } from "../global";
 import { useUser } from "@/Context/UserInfoContext";
 import {
   about_Type,
@@ -12,6 +11,8 @@ import {
   skills_Type,
   social_Type,
 } from "@/types/types";
+import { LoadingLink } from "../global/LoadingLink";
+import { IoMdReturnLeft } from "react-icons/io";
 
 type landingProps = {
   user_id: string;
@@ -56,8 +57,16 @@ export default function Section({
   const isOwner = userInfo && userInfo.user_id === user_id;
   return (
     <div className="relative ">
-      <LeftLine />
-      <Rightline />
+      {/* <LeftLine />
+      <Rightline /> */}
+
+      {isOwner && (
+        <div className="fixed top-30 left-10 text-white text-3xl bg-blue-600/20 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer hover:scale-105">
+          <LoadingLink href="/Admin/overview">
+            <IoMdReturnLeft />
+          </LoadingLink>
+        </div>
+      )}
 
       <div id="#hero" className="observe-section">
         <Header data={socialData} active={active} />
@@ -85,7 +94,7 @@ export default function Section({
       </div>
 
       <div id="#contact" className="observe-section">
-        <Contact />
+        <Contact userGmail = {socialData?.Gmail ?? ""} />
       </div>
 
       <div id="#bottom">

@@ -5,14 +5,12 @@ import { MdMarkEmailUnread } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
 import { FaSquareWhatsapp } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa";
-import { useUser } from "@/Context/UserInfoContext";
 import { useUpsertData } from "@/hook/api/useUpsertData";
 import { socialMediaSchema } from "@/Schema/authSchema";
-import { useState } from "react";
+import {  useState } from "react";
 import z from "zod";
 import { IconType } from "react-icons";
 import ErrorSchema from "../../Error/ErrorSchema";
-import { useInsertData } from "@/hook/api/useInsertData";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
 import ToastError from "../../Error/ToastError";
@@ -29,7 +27,24 @@ const socialMedia_obj: { id: number; name: socialKeys; icon: IconType }[] = [
   { id: 4, name: "LinkedIn", icon: FaLinkedin },
 ];
 
-export const AddSocialForm = () => {
+type socialMediaType = {
+  id: number | null;
+  user_id: string;
+  Gmail: string;
+  Facebook: string;
+  Whatsapp: string;
+  Github: string;
+  LinkedIn: string;
+};
+
+type props = {
+  user_id: string;
+  onUpdate ?: (data: socialMediaType) => void;
+};
+
+
+
+export const AddSocialForm = ({ user_id, onUpdate }: props) => {
   const [errorSchema, setErrorSchema] = useState<Record<string, string>>({});
   const [socialMedia, setSocialMedia] = useState<socialInfer>({
     Gmail: "",
@@ -38,7 +53,6 @@ export const AddSocialForm = () => {
     Github: "",
     LinkedIn: "",
   });
-  const { userInfo } = useUser();
   /*api operation */
   const { upsertData } = useUpsertData();
   const { status, loading, fail, success } = useReqStatus();
@@ -49,10 +63,6 @@ export const AddSocialForm = () => {
     e.preventDefault();
     if (status.loading) return;
 
-    if (!userInfo?.user_id) {
-      console.log("the user id is null");
-      return;
-    }
     loading();
 
     const result = socialMediaSchema.safeParse(socialMedia);
@@ -75,19 +85,41 @@ export const AddSocialForm = () => {
     );
     const cleanObject = Object.fromEntries(cleanData);
 
-    const { error } = await upsertData("social", cleanObject, userInfo.user_id);
+    const { data, error } = await upsertData("social", cleanObject, user_id);
 
     if (error) {
       if (error.code === "23505") {
         fail();
         show("This social media link is already in use.");
       } else {
-        console.log("there is error when insert data" + error);
+        console.log("there is error when insert data", error);
         fail();
         show("Something went wrong while adding the item.");
       }
       return;
     }
+
+    console.log(data);
+
+    if(!data){
+      console.log("somthing went wrongg when updated data !" , data);
+      fail();
+      show("Something went wrong! , please try again")
+      return
+    }
+
+    if(onUpdate) {
+      onUpdate({
+      id: data.id,
+      Gmail: data.Gmail,
+      Facebook: data.Facebook,
+      Whatsapp: data.Whatsapp,
+      Github: data.Github,
+      LinkedIn: data.LinkedIn,
+      user_id: data.user_id,
+    });
+    }
+    
 
     success();
     setSocialMedia({
@@ -107,12 +139,12 @@ export const AddSocialForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-full">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-8 h-full">
       {message && <ToastError message={message} />}
 
       {socialMedia_obj.map((inp) => {
         return (
-          <div key={inp.id} className="flex flex-col gap-2">
+          <div key={inp.id} className="flex flex-col gap-2 ">
             {errorSchema[inp.name] && (
               <ErrorSchema errorSchema={errorSchema[inp.name]} />
             )}
@@ -135,7 +167,7 @@ export const AddSocialForm = () => {
 
       <button
         type="submit"
-        className="transfom duration-200 bg-[hsl(154.9_100%_19.22%)] hover:bg-[hsl(154.9_100%_23.22%)] border border-gray-700 w-full p-2  rounded-md"
+        className="mt-auto transfom duration-200 bg-[hsl(154.9_100%_19.22%)] hover:bg-[hsl(154.9_100%_23.22%)] border border-gray-700 w-full p-2  rounded-md "
       >
         {status.loading ? "saving..." : "Save"}
       </button>

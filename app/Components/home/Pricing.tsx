@@ -3,23 +3,23 @@ import Link from "next/link";
 const plans = [
   {
     id:0 ,
-    title : "1 - Hour Free Trial" ,
-    feature : ["- Full access to all features" , "- No credit card required" ,  "- Explore everything before subscribing" , "- All information added be saved when clinet return"],
+    title : "Free Trial" ,
+    feature : ["- Up to 2 categories" , "- Up to 3 projects per category" ,  "- Public portfolio page" , "- Basic customization" , "- Free hosting with limited performance" ],
     btnText : "Get Free Trial",
     href:"/signup"
   },
   {
     id : 1 ,
-    title : "Pro Plan - $20/month",
+    title : "Pro Plan - Comming Soon" ,
     feature : [
-      "- Add / Edit / Delete projects",
-      "- SEO optimization",
-      "- Admin dashboard",
-      "- Instant publish link",
-      "- Private control (only owner can edit)",
-      "- High performance hosting"
+      "- Unlimited categories",
+      "- Unlimited projects",
+      "- Custom domain support",
+      "- Advanced portfolio themes",
+      "- Analytics & visitors insights",
+      "- Priority support"
     ],
-    btnText : "Get Start",
+    btnText : "Comming Soon",
     href:""
   }
 
@@ -33,7 +33,7 @@ export const Pricing = () => {
           Simple pricing for your career growth
         </h1>
         <p className="text-base text-gray-400 font-semibold max-w-md m-auto">
-          Try it for 1 hour. If you like it, unlock full access with a simple
+          Try it for Free. If you like it, unlock full access with a simple
           subscription.
         </p>
       </div>

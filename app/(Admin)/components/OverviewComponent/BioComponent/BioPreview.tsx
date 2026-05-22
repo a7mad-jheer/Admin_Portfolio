@@ -2,12 +2,10 @@
 import { useEffect, useState } from "react";
 import { EditBio } from "./EditBio";
 import { FaPlus } from "react-icons/fa";
-import DrawerOverlay from "../../Global/DrawerOverlay";
-import Bio from "../../SettingComponent/Bio";
 import BioCard from "./BioCard";
+import { MdEdit } from "react-icons/md";
 
 type BioDataType = {
-  id: number | null;
   full_name: string;
   job_title: string;
   description: string;
@@ -22,7 +20,6 @@ type props = {
 
 export const BioPreview = ({ bioSupabase, user_id }: props) => {
   const [bioData, setBioData] = useState<BioDataType>({
-    id: bioSupabase?.id ?? null,
     full_name: bioSupabase?.full_name ?? "Full_Name",
     job_title: bioSupabase?.job_title ?? "Job_Title",
     description: bioSupabase?.description ?? "Description",
@@ -30,7 +27,10 @@ export const BioPreview = ({ bioSupabase, user_id }: props) => {
     user_id: bioSupabase?.user_id ?? user_id,
   });
   const [showEdit, setShowEdit] = useState<boolean>(false);
-  const [showAdd , setShowAdd] = useState<boolean>(false)
+
+  useEffect(() => {
+    console.log("bio data from bio preview" + bioData);
+  } , [bioData])
 
   useEffect(() => {
     console.log("user id from bio preview" + user_id);
@@ -41,7 +41,7 @@ export const BioPreview = ({ bioSupabase, user_id }: props) => {
   };
 
   return (
-    <div className="">
+    <div className="relative h-full">
       <EditBio
         user_id={user_id}
         showEdit={showEdit}
@@ -50,29 +50,33 @@ export const BioPreview = ({ bioSupabase, user_id }: props) => {
         onAddEdit={(data) => handleEditData(data)}
       />
 
-      <DrawerOverlay 
-        drawerShow = {showAdd}
-        setDrawerShow={setShowAdd}
-        title = "Profile "
-        description = "Add profile infromations"
-        >
-          <Bio />
-        </DrawerOverlay>
-
-        {bioData.id === null ? (
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl my-5 font-semibold">Bio Information</h1>
+        {bioData.full_name === "Full_Name" ? (
+          <div className="flex items-center gap-5 mt-5 ">
+            <h1 className="text-xl  font-semibold">Bio Information</h1>
             <span 
-            onClick={() => setShowAdd(true)}
+            onClick={() => setShowEdit(true)}
             className="text-white/70 bg-black/40 h-9 w-9 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all duration-200 hover:scale-110 cursor-pointer ">
             <FaPlus />
             </span>
           </div>
         ) : (
-          <h1 className="text-xl my-5 font-semibold">Bio Information</h1>
+          <div className="flex items-center gap-5 mt-5">
+            <h1 className="text-xl  font-semibold">Bio Information</h1>
+          <div className=" flex  gap-2">
+                  { bioData.full_name !== "Full_Name"  && (
+                    <span
+                      className="text-white/70 bg-black/40 h-9 w-9 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all duration-200 hover:scale-110 cursor-pointer "
+                      onClick={() => setShowEdit(true)}
+                    >
+                      < MdEdit/>
+                    </span>
+                  )}
+                  
+                </div>
+            </div>
         )}
 
-        <BioCard data = {bioData} setShow = {setShowEdit}/>
+        <BioCard data = {bioData} />
     </div>
   );
 };

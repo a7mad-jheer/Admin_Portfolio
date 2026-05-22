@@ -1,18 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AddCategory } from "./AddCategory";
 import { TitlePanel } from "../Global/TitlePanel";
 import { EditCategory } from "./EditCategory";
 import AddProjectForm from "./AddProjectForm";
 import { IoClose } from "react-icons/io5";
+import { category_Type } from "@/types/types";
 
 /* end import show new card  */
-
-type Category_Type = {
-  name: string;
-  id: number | null;
-  user_id: string;
-};
 
 type categorySelected_Type = {
   id: number | null;
@@ -23,7 +18,7 @@ type categorySelected_Type = {
 type project_Type = {
   categoryId: number | null;
   description: string | null;
-  id: string | null;
+  id: number | null;
   image: string | null;
   name: string | null;
   url: string | null;
@@ -33,8 +28,11 @@ type props = {
   setAddProject: React.Dispatch<React.SetStateAction<boolean>>;
   addProject: boolean;
   onAddProject: (data: project_Type) => void;
-  user_id : string; 
-  serverCategories :Category_Type[],
+  user_id: string;
+  categories: category_Type[];
+  onEditCategory: (data: category_Type) => void;
+  AddNewCategoryFromForm: (data: category_Type) => void;
+  onDeleteCategory: (data: category_Type) => void;
 };
 
 export const AddProjectPage = ({
@@ -42,9 +40,11 @@ export const AddProjectPage = ({
   addProject,
   onAddProject,
   user_id,
-  serverCategories ,
+  categories,
+  onEditCategory,
+  AddNewCategoryFromForm,
+  onDeleteCategory,
 }: props) => {
-  const [categories, setCategories] = useState<Category_Type[] >(serverCategories ?? []);
   const [categorySelected, setCategorySelected] =
     useState<categorySelected_Type>({
       id: null,
@@ -53,16 +53,6 @@ export const AddProjectPage = ({
     });
 
   /*Start Function */
-
-
-  //add new category from AddCategory component :
-  const handelNewCategories = (newCategories: Category_Type) => {
-      if(!categories) {
-        return;
-      }
-
-      setCategories((prev) => [...(prev ?? [])  , newCategories ]);
-  };
 
   //Select the Title of the projects add
   const handelSelectedCategory = (
@@ -84,7 +74,12 @@ export const AddProjectPage = ({
     onAddProject(data);
   };
 
-
+  useEffect(() => {
+    console.log("DEBUG props:");
+    console.log({
+      AddNewCategoryFromForm,
+    });
+  }, []);
 
   /* Start JSX */
   return (
@@ -106,21 +101,34 @@ export const AddProjectPage = ({
           </div>
           <div className="w-full md:flex gap-5">
             <div className="relative py-5 w-full">
+              <div className="text-sm my-3 text-red-500">
+                **Please Add Category and Click Save , then Selected Category.
+              </div>
+
               {/* Add New Category Title */}
-              <AddCategory onAdd={handelNewCategories} user_id={user_id}/>
+              <AddCategory
+                user_id={user_id}
+                onAddCategory={(data: category_Type) =>
+                  AddNewCategoryFromForm(data)
+                }
+              />
+
               {/* Edit Category Title */}
               <EditCategory
                 categories={categories}
-                setCategories={setCategories}
+                onEditCategory={(data) => onEditCategory(data)}
+                onDeleteCategory={(data) => onDeleteCategory(data)}
                 onSelected={handelSelectedCategory}
                 categorySelected={categorySelected}
               />
+
               {/* Add New Project */}
               <AddProjectForm
-                addProject ={addProject}
+                user_id={user_id}
+                addProject={addProject}
                 setAddProject={setAddProject}
                 categorySelected={categorySelected}
-                onAddProject={handleAddProjects}
+                onAddProject={(data) => handleAddProjects(data)}
               />
             </div>
           </div>

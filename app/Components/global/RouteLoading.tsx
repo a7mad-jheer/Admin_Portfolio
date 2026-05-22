@@ -1,37 +1,27 @@
-"use client"
+"use client";
 
-import { useState , useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useLoading } from "@/hook/ui/useLoading";
 
-
-export const RouteLoading = ({children} : {children : React.ReactNode}) => {
-
-    const [loading , setLoading] = useState<boolean>(false);
-    const pathName = usePathname();
-
-    useEffect(() => {
-        if(pathName === "/") return;
-        setLoading(true);
-
-        const timer = setTimeout(() => {
-            setLoading(false);
-        },500)
-
-        return () => clearTimeout(timer)        
-    }, [pathName])
-
-    if(loading) {
-        return (
-            <div className="h-screen flex flex-col gap-8 justify-center items-center">
-                <div className="h-10 w-10 rounded-full border-5 border-gray-500 border-t-black animate-[spin_3s_linear_infinite]"></div>
-                <h1 className="text-2xl font-semibold ">Loading...</h1>
-            </div>
-        )
-    }
+export const RouteLoading = ({ children }: { children: React.ReactNode }) => {
+  const { loading } = useLoading();
 
     return (
-        <>{children}</>
-    )
-}
+      <>
+      {children}
+
+      {loading && (
+        <div className="relative w-full h-full">
+        
+
+        <div className="fixed bottom-5 right-5 text-white/90 bg-black border-2 border-gray-700 w-fit flex items-center px-2 py-0.5 rounded-full gap-2 font-semibold  z-50 ">
+          <div className="h-4 w-4 animate-spin rounded-full border-3  border-white/10 border-t-green-500" />
+          <p>Loading...</p>
+        </div>
+      </div>
+      )}
+      </>
+    );
+
+};
 
 export default RouteLoading;

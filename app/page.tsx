@@ -2,6 +2,7 @@ import ParticlesBasic from "./Components/global/ParticlesBasic";
 import SplashLoading from "./Components/global/SplashLoading";
 import CTA from "./Components/home/CTA";
 import MainFeature from "./Components/home/MainFeature";
+import MainFooter from "./Components/home/MainFooter";
 import MainHeader from "./Components/home/MainHeader";
 import MainHero from "./Components/home/MainHero";
 import Pricing from "./Components/home/Pricing";
@@ -18,12 +19,18 @@ export default async function Home() {
     return (
         <SplashLoading>
         <ParticlesBasic>
+
+
             <MainHeader /> 
             <MainHero />
+
+        
+
             <SliderPreview />
             <MainFeature/>
             <Pricing />
             <CTA/>
+            <MainFooter />
         </ParticlesBasic>
     </SplashLoading>
     )

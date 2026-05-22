@@ -33,7 +33,7 @@ export const useSelectData =  () => {
 
         query = applyFilter(query , filters)
 
-        const {data , error} = await query.single()
+        const {data , error} = await query.maybeSingle()
         return {data , error}
     }
 

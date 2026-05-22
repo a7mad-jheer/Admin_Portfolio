@@ -4,15 +4,14 @@ import { useUser } from "@/Context/UserInfoContext";
 import { useDeleteData } from "@/hook/api/useDeleteData";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
-import NProgress from "nprogress";
 import ToastError from "../../Error/ToastError";
-
+import { category_Type } from "@/types/types";
 
 type deleteProps = {
   editSelectedValue : number | null,
   setDeleteClick : React.Dispatch<React.SetStateAction<boolean>>,
   setEditSelectedValue : React.Dispatch<React.SetStateAction<number | null>>,
-  deleteCategory : (id : number) => void
+  deleteCategory : (data : category_Type) => void
 }
 
 export const DeleteCategory = ({editSelectedValue , setDeleteClick , setEditSelectedValue , deleteCategory} : deleteProps) => {
@@ -32,7 +31,6 @@ export const DeleteCategory = ({editSelectedValue , setDeleteClick , setEditSele
     }
 
     loading();    
-    NProgress.start();
 
     const {data , error} = await deleteData("categories" , [{column: "id", value : editSelectedValue}] , true);
     
@@ -40,14 +38,12 @@ export const DeleteCategory = ({editSelectedValue , setDeleteClick , setEditSele
       console.log("there is problem when delete category name");
       fail();
       show("Something went wrong while deleting the category.")
-      NProgress.done();
       return;
     }
 
     success();
     show("Category deleted successfully.")
-    deleteCategory(data.id);
-    NProgress.done();
+    deleteCategory(data);
     setDeleteClick(prev => !prev);
     setEditSelectedValue(null);
   }
@@ -57,7 +53,7 @@ export const DeleteCategory = ({editSelectedValue , setDeleteClick , setEditSele
     <div className="z-30 flex items-center justify-center w-full h-full">
       {message && <ToastError message={message}/>}
 
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-white  px-10 p-3 rounded-md shadow-2xl">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-zinc-800  px-10 p-3 rounded-md shadow-2xl">
         <h1 className="font-bold text-xl text-center mb-5">Delete Now</h1>
         <div className="flex gap-2">
           <button 

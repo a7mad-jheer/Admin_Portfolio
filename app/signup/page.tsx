@@ -73,80 +73,74 @@ export default  function Signup() {
 
 
 
-  const handleSendData =  async (e : React.FormEvent) => {
-    e.preventDefault()
+const handleSendData = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if(status.loading) return;
+  if (status.loading) return;
 
-    /* we here use schema to safe state in the form and give error */
-    const result = SignupSchema.safeParse(signData);
-    if(!result.success) {
-      const fieldError : typeof errorSchema = {};
+  // 1. validation
+  const result = SignupSchema.safeParse(signData);
 
-      result.error.issues.forEach((err) => {
-        fieldError[err.path[0] as keyof signupSchema] = err.message;
-      })
+  if (!result.success) {
+    const fieldError: Partial<Record<keyof signupSchema, string>> = {};
 
-      setErrorSchema(fieldError);
-      return;
-    }
-
-    setErrorSchema({})
-    loading();
-
-    // now the form data is true we need to check the email , password in auth.signup
-    const {data : {user} , error:SignupError} = await supabase.auth.signUp({
-      email : signData.email! ,
-      password : signData.password!
+    result.error.issues.forEach((err) => {
+      fieldError[err.path[0] as keyof signupSchema] = err.message;
     });
 
-    if(SignupError) {
-      console.log("error throw signup problem in data" , SignupError);
-      fail();
-      show("Somting went wrong , please try again!");
-      return;
-    }
-
-    const userInformation = user;
-    console.log(userInformation);
-
-    if(!userInformation) {
-      console.log("no user returned from signup!")
-      fail();
-      show("Somting went wrong , please try again!");
-      return;
-    }
-
-
-
-
-    const {error : profileError} = await insertData('profile' , {
-      user_name : signData.user_name ,
-      name : signData.name!,
-      email:userInformation.email!,
-      user_id: userInformation.id!,
-      isSubscribed : false,
-      trialEndsAt : new Date(Date.now() + 60*60*1000) 
-    })
-
-    if(profileError) {
-      console.log("error throw in profile table" , profileError);
-      fail();
-      show("Somting went wrong! , please try again");
-      return;
-    }
-
-    success();
-    show("Signup Successfully , please Login")
-    setSignData({
-      user_name : "",
-      name : "",
-      email : "",
-      password : ""
-    })
-
-    router.replace("/login");
+    setErrorSchema(fieldError);
+    return;
   }
+
+  setErrorSchema({});
+  loading();
+
+  // 2. signup auth
+  const { data, error: signupError } = await supabase.auth.signUp({
+    email: signData.email,
+    password: signData.password,
+    options : {
+      emailRedirectTo : "http://localhost:3000/auth/callback",
+     data : {
+      name : signData.name,
+      user_name : signData.user_name,
+     }
+    }
+  });
+
+  // 3. handle error
+  if (signupError) {
+    if (signupError.message.includes("rate limit")) {
+      show("You’ve tried too many times. Please wait a few minutes.");
+    } else if (signupError.message.includes("already registered")) {
+      show("This email is already registered. Try logging in.");
+    } else {
+      show("Something went wrong. Please try again.");
+      console.log(signupError)
+    }
+
+    fail();
+    return;
+  }
+
+
+  // 6. success flow
+  success();
+  // show("We’ve sent a confirmation email to your inbox.");
+  show("signup Successfully , please wait to login")
+  setSignData({
+    user_name: "",
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  // 7. redirect
+  setTimeout(() => {
+    // router.push(`/verify-Email?email=${signData.email}`);
+    router.push("/login");
+  }, 3000)
+};
   
 
 
@@ -227,6 +221,7 @@ export default  function Signup() {
           />
           <button 
             type="submit"
+             disabled={status.loading}
             className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700">
               {status.loading ? "wait..." : "Sign Up"}
               </button>

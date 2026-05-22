@@ -12,13 +12,13 @@ export async function POST(req:Request) {
 
     if(error) {
         return Response.json(
-            {error : error.message},
+            {user : data.user ?? null , error : error.message},
             {status : 401}
         )
     }
 
     return Response.json(
-        {message : "Login successful"},
+        {user : data.user ,message : "Login successful"},
         {status : 200},
     )
 }

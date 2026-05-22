@@ -1,50 +1,81 @@
-"use client"
-import { IoSearchOutline } from "react-icons/io5";
-import { IoIosNotificationsOutline } from "react-icons/io";
+"use client";
+
 import MenuIcon from "../Global/MenuIcon";
-import { useSelectData } from "@/hook/api/useSelectData";
-import { useUser } from "@/Context/UserInfoContext";
-import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hook/ui/useToast";
+import ToastError from "../Error/ToastError";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useReqStatus } from "@/hook/ui/useReqStatus";
 
 type props = {
-  setShowSidebar : React.Dispatch<React.SetStateAction<boolean>>;
-}
+  setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
+export const AdminHeader = ({ setShowSidebar }: props) => {
+  const [logOut, setLogout] = useState<boolean>(false);
+  const { loading, fail, success, status } = useReqStatus();
+  const router = useRouter();
 
-export const AdminHeader =  ({ setShowSidebar }: props) => {
+  const { show, message } = useToast();
 
-  const [name, setName] = useState<string>("")
+  const handleLogout = async () => {
+    setLogout(true);
 
-/* api opertations */
-const {selectWithSingle} = useSelectData();
-/* api opertations */
+    if (status.loading) return;
 
-/* get user_id from context */
-  const {userInfo} = useUser();
-/* get user_id from context */
+    loading();
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if(!userInfo?.user_id) {
-        console.log("uer_id is null" , userInfo?.user_id);
-        return;
-      }
-      const {data, error} = await selectWithSingle("profile" , [{column : "user_id" , value : userInfo.user_id}]);
-
-      if(error) {
-        console.log("error when fetch name" + error);
-        return;
-      }
-
-      setName(data.name);
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log("somthing went error when logout", error);
+      fail();
+      show("Something went wrong! , please try again later.");
+      return;
     }
 
-    fetchData();
-  }, [userInfo?.user_id , selectWithSingle]);
+    success();
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
-    <div className="
+    <>
+      {logOut && (
+        <div className="fixed inset-0  z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-zinc-800 p-5 text-white rounded-md flex flex-col gap-4 min-w-[300px] text-center">
+            <h1 className="text-xl font-semibold py-2 mb-3  text-center text-gray-300">
+              Are you sure you want to log out?
+            </h1>
+
+            <div className="flex items-center gap-2 px-4">
+              <button
+                onClick={handleLogout}
+                className="bg-red-800/50 py-2 px-3 rounded-md hover:bg-red-700 font-semibold cursor-pointer w-1/2"
+              >
+                {status.loading ? (
+                  <div className="flex gap-2 items-center justify-center">
+                    <div className="h-4 w-4 animate-spin rounded-full border-3  border-white/10 border-t-green-500" />
+                    logging out...
+                  </div>
+                ) : (
+                  "Log out Now"
+                )}
+              </button>
+
+              <button
+                onClick={() => setLogout(false)}
+                className="bg-white/20 py-2 px-2 rounded-md hover:bg-gray-600 font-semibold cursor-pointer w-1/2"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div
+        className="
       fixed
       flex items-center justify-between
       w-full 
@@ -57,20 +88,20 @@ const {selectWithSingle} = useSelectData();
       border-b
       border-gray-600
       md:border-none
-    ">
-      
-      {/* LEFT */}
-      <div className="flex items-center gap-3">
-        
+    "
+      >
+        {message && <ToastError message={message} />}
 
-        <MenuIcon setShowSidebar = {setShowSidebar}/>
+        {/* LEFT */}
+        <div className="flex items-center gap-3">
+          <MenuIcon setShowSidebar={setShowSidebar} />
 
-        <span className="text-lg font-semibold hidden sm:block">
-          Dashboard
-        </span>
-      </div>
+          <span className="text-lg font-semibold hidden sm:block">
+            Dashboard
+          </span>
+        </div>
 
-      {/* CENTER (search) */}
+        {/*       
       <div className="hidden md:flex items-center w-1/3 relative">
         <input
           type="search"
@@ -85,26 +116,30 @@ const {selectWithSingle} = useSelectData();
           "
         />
         <IoSearchOutline className="absolute left-3 text-gray-400" />
-      </div>
+      </div> */}
 
-      {/* RIGHT */}
-      <div className="flex items-center gap-2">
-        
-        <span className="p-2 rounded-full hover:bg-white/10 cursor-pointer transition">
+        {/* RIGHT */}
+        <div className="flex items-center gap-2">
+          {/* <span className="p-2 rounded-full hover:bg-white/10 cursor-pointer transition">
           <IoIosNotificationsOutline size={22} />
-        </span>
+        </span> */}
 
-        <div>
-          <button className="px-2 py-1 text-sm rounded-md  bg-[#005f3c] border border-gray-700 cursor-pointer hover:scale-105">Upgrade Now</button>
+          <div>
+            <button className="px-2 py-1 text-sm rounded-md  bg-[#005f3c] border border-gray-700 cursor-pointer hover:scale-105">
+              Upgrade Now
+            </button>
+          </div>
+
+          {/* Avatar */}
+          <div
+            onClick={() => setLogout(true)}
+            className="rounded-md bg-red-500/60 px-2 py-1 flex items-center justify-center font-semibold cursor-pointer"
+          >
+            Log Out
+          </div>
         </div>
-
-        {/* Avatar */}
-        <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center font-semibold">
-          {name}
-        </div>
-
       </div>
-    </div>
+    </>
   );
 };
 

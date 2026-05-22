@@ -4,19 +4,17 @@ import ToastError from "../Error/ToastError";
 import { useInsertData } from "@/hook/api/useInsertData";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
+import { category_Type } from "@/types/types";
+import { supabase } from "@/lib/supabase";
 
-type Category_Type = {
-  name: string;
-  id: number | null;
-  user_id: string;
-};
+
 
 type OnAdd_Type = {
-  onAdd: (data: Category_Type) => void;
+  onAddCategory : (data: category_Type) => void;
   user_id : string
 };
 
-export const AddCategory = ({ onAdd ,user_id}: OnAdd_Type) => {
+export const AddCategory = ({ onAddCategory ,user_id}: OnAdd_Type) => {
   const [inputCategory, setInputCategory] = useState<string>("");
 
   /* api operations */
@@ -35,6 +33,17 @@ export const AddCategory = ({ onAdd ,user_id}: OnAdd_Type) => {
 
     const cleanName = inputCategory.trim().toLowerCase();
 
+    const {count , error } = await supabase.from("categories").select("*" ,{count :"exact" , head : true} ).eq("user_id" , user_id);
+
+    if(error) {
+      show("Something went wrong while checking existing categories.");
+      fail();
+      console.log("there is problem when select all categories to check the name of category", error);
+      return; 
+    }
+
+    if((count ?? 0) < 2) {
+      
     //insert the category name , user_id
       const { data: insertInfo, error: insertError } = await insertData("categories" , {
           name: cleanName,
@@ -56,10 +65,24 @@ export const AddCategory = ({ onAdd ,user_id}: OnAdd_Type) => {
       return;
     }
 
+    console.log( "Inserted Category from add categories:",insertInfo)
     success();
     show("Added successfully.")
     setInputCategory("");
-    onAdd(insertInfo);
+    const newCategory: category_Type = {
+      id: insertInfo.id ,
+      name: insertInfo.name ,
+      user_id: insertInfo.user_id ,
+    }
+    onAddCategory(newCategory)
+    return;
+    }
+
+    
+      fail();
+      show("You have reached the maximum number of categories allowed. Please delete an existing category before adding a new one.");
+      return;
+    
   };
 
   //start jsx :

@@ -5,12 +5,15 @@ import { ParticlesBasic } from "../Components/global";
 import z from "zod";
 import { LoginSchema } from "@/Schema/authSchema";
 import ErrorSchema from "../(Admin)/components/Error/ErrorSchema";
-import { useRouter } from "next/navigation";
 import { motion, easeOut } from "framer-motion";
 import { IoMdReturnRight } from "react-icons/io";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
 import ToastError from "../(Admin)/components/Error/ToastError";
+import { supabase } from "@/lib/supabase";
+import { useInsertData } from "@/hook/api/useInsertData";
+import { useSelectData } from "@/hook/api/useSelectData";
+import { useRouter } from "next/navigation";
 
 type LoginData_Type = {
   email: string | null;
@@ -53,7 +56,6 @@ const form = {
 };
 
 export default function Login() {
-  const router = useRouter();
 
   const [loginData, setLoginData] = useState<LoginData_Type>({
     email: "",
@@ -66,7 +68,12 @@ export default function Login() {
   /* api operations */
   const { status, loading, fail, success } = useReqStatus();
   const { show, message } = useToast();
+  const {insertData} = useInsertData();
+  const {selectWithSingle} = useSelectData();
   /* api operations */
+
+
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,11 +89,12 @@ export default function Login() {
       return;
     }
     setErrorSchema({});
+
     loading();
 
     //now we need to send user data to server side to create cookies;
     const res = await fetch("/api/login", {
-      method: "post",
+      method: "POST",
       headers: {
         "content-type": "application/json",
       },
@@ -96,30 +104,82 @@ export default function Login() {
       }),
     });
 
+    const contentType = res.headers.get("content-type");
+
+    if(!contentType?.includes("application/json")){
+      const text = await res.text();
+
+      console.log("Invalid response :" , text);
+
+      show("Somthing went error!, please refresh the page and try again.")
+    }
+
     const resultFetch = await res.json();
+    console.log(resultFetch.error);
 
     if (!res.ok) {
-      console.log(resultFetch.error);
+      console.log(resultFetch);
       fail();
       show("Somthing went error , please try again!");
       return;
     }
 
-    success();
+    const {data : {user} , error} = await supabase.auth.getUser();
+
+    if(error) {
+      fail();
+      show("Failed to retrieve user data. Please try again.");
+      return;
+    }
+
+    if(!user) {
+      return router.replace("/login");
+    }
+
+    const {data : profileData , error : profileError} = await selectWithSingle("profile" , [{column : "user_id" , value : user.id}])
+
+
+    if(profileError) {
+      console.log(profileError);
+      fail();
+      show("Failed to retrieve user profile. Please try again.");
+      return;
+    }
+
+    if(!profileData) {
+      const {data , error } = await insertData("profile" , {
+        user_id : user.id ,
+        name : user.user_metadata.name ,
+        user_name : user.user_metadata.user_name ,
+        email : user.email,
+        isSubscribed : false,
+        trialEndsAt : null
+      })
+
+      if(error) {
+        console.log(error);
+        fail();
+        show("Failed to create user profile. Please try again.");
+        return;
+      }
+
+    }
+
+
     show("Login Successfully.");
     setLoginData({
       email: "",
       password: "",
     });
 
-    router.replace("/Admin/overview");
     router.refresh();
+    router.replace("/Admin/overview")
+    success()
   };
 
   return (
     <ParticlesBasic>
-
-      {message && <ToastError message={message}/>}
+      {message && <ToastError message={message} />}
       <div className=" h-screen flex flex-col items-center justify-center ">
         <div className="absolute top-5 right-5 text-white text-3xl bg-blue-600/20 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer hover:scale-105">
           <Link href="/">
@@ -189,7 +249,7 @@ export default function Login() {
             />
             <button
               type="submit"
-              className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700"
+              className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700 cursor-pointer hover:scale-105 transition"
             >
               {status.loading ? "wait..." : "Login Now"}
             </button>

@@ -105,7 +105,7 @@ export const SkillsTable = ({
   };
 
   return (
-    <div>
+    <div >
       <ConfirmDelete
         status={status}
         showDelete={deleteClicked}
@@ -120,11 +120,11 @@ export const SkillsTable = ({
 
       {message && <ToastError message={message} />}
 
-      <table className="text-white bg-[hsl(0_0%_10.98%)] border-gray-800 border p-2 border-collapse w-full mt-5">
+      <table className="text-white bg-[hsl(0_0%_10.98%)] border-gray-800 border p-2 border-collapse w-full mt-5 rounded-md">
         <thead>
           <tr>
             <th className="border border-gray-800  p-2">#</th>
-            <th className="border border-gray-800  p-2">Technology</th>
+            <th className="border border-gray-800  p-2">{supabaseTableTitle}</th>
             <th className="border border-gray-800  p-2">Options</th>
           </tr>
         </thead>
@@ -148,10 +148,10 @@ export const SkillsTable = ({
                         className="w-full bg-[hsl(0_0%_10.98%)] p-2 border-gray-800 border rounded-md text-sm outline-none"
                       />
                     ) : (
-                      <span>{skill.name}</span>
+                      <span>{skill.name} </span>
                     )}
                   </td>
-                  <td className="border border-gray-800  p-2  max-w-20 ">
+                  <td className="border border-gray-800  p-2  max-w-30 ">
                     {editClicked && selectedBtn === skill.id ? (
                       <div className="flex gap-2">
                         <button
@@ -176,6 +176,7 @@ export const SkillsTable = ({
                           onClick={() => {
                             setEditClicked(true);
                             setSelectedBtn(skill.id);
+                            setNewValue(skill.name)
                           }}
                           className="transfom duration-200 bg-[hsl(154.9_100%_19.22%)] hover:bg-[hsl(154.9_100%_23.22%)] border border-gray-700  p-2  rounded-md cursor-pointer w-1/2"
                         >
@@ -185,6 +186,7 @@ export const SkillsTable = ({
                           onClick={() => {
                             setSelectedBtn(skill.id);
                             setDeleteClicked(true);
+                            setNewValue("")
                           }}
                           className="bg-red-800/50 py-2 px-3 rounded-md hover:bg-red-700 font-semibold cursor-pointer w-1/2"
                         >

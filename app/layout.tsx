@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { UserProvider } from "@/Context/UserInfoContext";
 import RouteLoading from "./Components/global/RouteLoading";
+import { LoadingProvider } from "@/Context/LoadingContext";
+import ResetLoading from "./Components/layout/ResetLoading";
 
 
 export const metadata: Metadata = {
@@ -21,9 +23,12 @@ export default function RootLayout({
         
        <UserProvider>
         <main>
+          <LoadingProvider>
           <RouteLoading>
+            <ResetLoading/>
           {children}
           </RouteLoading>
+          </LoadingProvider>
           </main>
         </UserProvider>
       </body>

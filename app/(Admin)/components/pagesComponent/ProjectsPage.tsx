@@ -8,52 +8,77 @@ import EditSide from "../AddProjectCom/EditProjectComponent/EditSide";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
 import ToastError from "../Error/ToastError";
+import { Dispatch, useEffect, useState } from "react";
 import IconAction from "../Global/IconAction";
-import { useState } from "react";
+import { useUpdateData } from "@/hook/api/useUpdateData";
+import FormAction from "../Global/FormAction";
+import { category_Type } from "@/types/types";
 
 type project_Type = {
   categoryId: number | null;
   description: string | null;
-  id: string | null;
+  id: number | null;
   image: string | null;
   name: string | null;
   url: string | null;
 };
 
-type Category_Type = {
-  name: string;
-  id: number | null;
-  user_id: string;
-};
+
 
 type props = {
-  serverProjects: project_Type[];
-  serverCategories: Category_Type[];
+  categories: category_Type[];
   user_id: string;
+  onAddProjects: (data: project_Type) => void;
+  onDeleteProject : (data : project_Type) => void;
+  onEditProjects : (data : project_Type) => void;
+  onDeleteProjectsWithCategoryId : (data : project_Type[]) => void;
+  onEditCategories : (data : category_Type) => void,
+  onDeleteCategories : (data : category_Type) => void,
+  projects: project_Type[];
+  addProject: boolean;
+  setAddProject: Dispatch<React.SetStateAction<boolean>>;
+  AddNewCategoryFromForm : (data : category_Type) => void,
+  EditCategoryFromForm : (data : category_Type) => void,
+  DeleteCategoryFromForm : (data : category_Type) => void,
 };
 
 export const ProjectsPage = ({
-  serverProjects,
-  serverCategories,
+  categories,
   user_id,
+  onAddProjects,
+  onDeleteProject,
+  onEditProjects,
+  onDeleteProjectsWithCategoryId,
+  onEditCategories,
+  onDeleteCategories,
+  projects,
+  addProject,
+  setAddProject,
+  AddNewCategoryFromForm,
+  EditCategoryFromForm,
+  DeleteCategoryFromForm
 }: props) => {
-  const [addProject, setAddProject] = useState<boolean>(false);
-  const [projects, setProjects] = useState<project_Type[]>(
-    serverProjects ?? [],
-  );
   const [showEdit, setShowEdit] = useState<boolean>(false);
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<number | null>(null);
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [showDelete, setShowDelete] = useState<boolean>(false);
+  const [catName , setCatName] = useState<string>("")
+  const [catDelete , setCatDelete] = useState<boolean>(false)
 
   /* api operations */
   const { deleteData } = useDeleteData();
+  const { updateData } = useUpdateData();
   const { status, loading, success, fail } = useReqStatus();
   const { show, message } = useToast();
   /* api operations */
 
+  useEffect(() => {
+      console.log("categories from projects page" , categories)
+    }, [])
+  
+
   const handleShowSideEdit = (
-    projectId: string | null,
+    projectId: number | null,
     categoryId: number | null,
   ) => {
     setShowEdit(true);
@@ -61,47 +86,31 @@ export const ProjectsPage = ({
     setCategoryId(categoryId);
   };
 
-  const handleEditProject = (data: project_Type) => {
-    if (!projects) {
-      return;
-    }
-
-    const project = projects.map((p) => {
-      if (p.id === projectId) {
-        return {
-          ...p,
-          name: data.name,
-          description: data.description,
-          image: data.image,
-          url: data.url,
-        };
-      } else return p;
-    });
-
-    setProjects(project);
-    setProjectId(null);
-  };
-
   /* Delete Project */
-  const handleDleteProject = async () => {
+  const handleDeleteProject = async () => {
     if (status.loading) return;
 
+    loading();
+
     if (!projects) {
+      console.log("there is problem in projects ", projects);
+      show("Somthing went wrong! , please try again");
+      fail();
       return;
     }
 
     if (!projectId) {
       console.log("the ProjectId is not Selected" + projectId);
       fail();
-      show("Please Select Project ");
+      show("Please Select Project");
       return;
     }
 
-    loading();
-
-    const { error } = await deleteData("projects", [
-      { column: "id", value: projectId },
-    ]);
+    const { data, error } = await deleteData(
+      "projects",
+      [{ column: "id", value: projectId }],
+      true,
+    );
 
     if (error) {
       console.log("there is problem when delete" + error);
@@ -110,22 +119,90 @@ export const ProjectsPage = ({
       return;
     }
 
+    if (!data) {
+      show("Somthing went wrong !, please try again");
+      fail();
+      console.log("there is data when delete selected projects", data);
+      return;
+    }
+
     success();
     show("Deleted Successfully");
-    const filteredProjects = projects.filter((p) => p.id !== projectId);
-    setProjects(filteredProjects);
+    onDeleteProject(data);
     setProjectId(null);
     setShowDelete(false);
     console.log("deleted successfully");
   };
 
-  /*Add Project to Projects Array To Preview Projects Added */
-  const handleAddProject = (data: project_Type) => {
-    console.log(data);
-    if (projects) {
-      setProjects((prev) => [...(prev ?? []), data]);
+  const handleCatEdit = async (e : React.FormEvent) => {
+    e.preventDefault()
+
+    if(status.loading)return;
+
+    if(categoryId === null){
+      show("Please Select Category");  
+      return
+    };
+
+    loading();
+
+    const {data , error } = await updateData("categories" , {name : catName} , [{column : "user_id" , value : user_id} , {column : "id" , value : categoryId}] , true);
+
+    if(error) { 
+      console.log("Somthing went wrong when edit categories" , error);
+      fail();
+      show("Somting went wrong! , please try again")
+      return;
     }
-  };
+
+    console.log(data);
+    success();
+    show("Edit category successfully.")
+    onEditCategories(data);
+    setCategoryId(null);
+    setCatName("")    
+  }
+
+  const handleDeleteCategoryAndProjects = async () => {
+    if(status.loading) return;
+
+    if(categoryId === null) {
+      show("Please Select Category");
+      return;
+    }
+
+    loading();
+
+    const {data : categoryData , error : categoryError} = await deleteData("categories" , [{column : "user_id" , value : user_id} , {column : "id" , value : categoryId}] , true);
+
+    if(categoryError) {
+      console.log("error when delete category " , categoryError);
+      show("Something went wrong while deleting the category.");
+      fail();
+      return;
+    }
+
+    console.log(categoryData);
+    onDeleteCategories(categoryData);
+
+
+    const {data : projectData , error : projectError} = await deleteData("projects" , [{column : "user_id" , value : user_id} , {column : "categoryId" , value : categoryId}]);
+
+    if(projectError) {
+      console.log("Somthing went error when delete projects" , projectError);
+      fail();
+      show("Something went wrong! , please try again");
+      return;
+    }
+
+    onDeleteProjectsWithCategoryId(projectData);
+    success();
+    setCategoryId(null);
+    setCatDelete(false)
+    console.log(projectData);
+  }
+
+
 
   return (
     <div className="relative p-5">
@@ -136,24 +213,27 @@ export const ProjectsPage = ({
       )}
 
       <AddPorjectPage
-        serverCategories={serverCategories}
+        categories={categories}
         user_id={user_id}
         addProject={addProject}
         setAddProject={setAddProject}
-        onAddProject={handleAddProject}
+        onAddProject={(data) => onAddProjects(data)}
+        AddNewCategoryFromForm={(data) => {AddNewCategoryFromForm(data)}}
+        onEditCategory = {(data) => EditCategoryFromForm(data)}
+        onDeleteCategory = {(data) => DeleteCategoryFromForm(data)}
       />
 
       <EditSide
-      serverCategories={serverCategories}
+        categories={categories}
         showEdit={showEdit}
         setShowEdit={setShowEdit}
         categoryId={categoryId}
         projectId={projectId}
-        onEdit={handleEditProject}
+        onEdit={(data) => onEditProjects(data)}
       />
 
       <ConfirmDelete
-        onConfirm={handleDleteProject}
+        onConfirm={() => handleDeleteProject()}
         onCancel={() => {
           setShowDelete(false);
           setProjectId(null);
@@ -161,6 +241,19 @@ export const ProjectsPage = ({
         status={status}
         showDelete={showDelete}
         title="project"
+        selectedBtn={projectId}
+      />
+
+     <ConfirmDelete
+        onConfirm={() => handleDeleteCategoryAndProjects()}
+        onCancel={() => {
+          setCatDelete(false);
+          setCategoryId(null);
+        }}
+        status={status}
+        showDelete={catDelete}
+        title="category and his all projects"
+        selectedBtn={categoryId}
       />
 
       {/* Title Panel */}
@@ -176,15 +269,37 @@ export const ProjectsPage = ({
       </div>
 
       <div>
-        {serverCategories &&
-          serverCategories.map((cat) => {
+        {categories &&
+          categories.map((cat) => {
             return (
               <div key={cat.id}>
-                <div className="text-center mb-8 mt-12">
-                  <h1 className="text-3xl font-bold text-white mb-2">
-                    {cat.name}
-                  </h1>
-                  <div className="w-20 h-1 bg-blue-600 mx-auto rounded-full" />
+                <div className="mb-8 mt-12">
+                  {categoryId === cat.id ? (
+                  <form 
+                    onSubmit={handleCatEdit}
+                    className="flex  items-center justify-center gap-2 ">
+                    <input value={catName} onChange = {(e) => setCatName(e.target.value)} placeholder="Input New Value..." className=" bg-[hsl(0_0%_10.98%)] p-2 border-gray-800 border rounded-md text-sm outline-none text-white"/>
+                    <FormAction 
+                      onCancel = {() => {setCategoryId(null)}} status ={status} row={true}
+                    />
+                  </form>
+                ) : (
+                  <div className="flex items-center gap-5 justify-center">
+                  <div className="text-center ">
+                    <h1 className="text-3xl font-bold text-white mb-2">
+                      {cat.name}
+                    </h1>
+                    <div className="w-20 h-1 bg-blue-600 mx-auto rounded-full" />
+                  </div>
+
+                  <IconAction
+                    onEditClick={() => {setCategoryId(cat.id); setCatName(cat.name)}}
+                    onDeleteClick={() => {setCatDelete(true); setCategoryId(cat.id)}}
+                    noAbsolute={true}
+                  />
+
+                </div>
+                )}
                 </div>
 
                 <div className=" grid grid-cols-12  gap-5">
@@ -219,10 +334,10 @@ export const ProjectsPage = ({
                             </div>
 
                             <IconAction
-                              onConfirm={() =>
+                              onEditClick={() =>
                                 handleShowSideEdit(proj.id, cat.id)
                               }
-                              onCancel={() => {
+                              onDeleteClick={() => {
                                 setShowDelete(true);
                                 setProjectId(proj.id);
                               }}

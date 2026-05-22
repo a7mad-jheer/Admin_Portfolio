@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+
 type props = {
     onCancel : () => void ,
     status : {
@@ -13,8 +15,13 @@ type props = {
 
 
 export const FormAction = ({onCancel , status , row} : props) => {
+  
+useEffect(() => {
+  console.log(status.loading , "status from form action")
+}, [status.loading])
+
     return (
-        <div className={`flex ${row ? "flex-row": "flex-col"} gap-2 justify-end mt-5 text-sm `}>
+        <div className={`flex ${row ? "flex-row": "flex-col"} gap-2 justify-end text-white text-sm `}>
                 <button
                   type="submit"
                   className="transfom duration-200 bg-[hsl(154.9_100%_19.22%)] hover:bg-[hsl(154.9_100%_23.22%)] border border-gray-700 p-2  rounded-md"

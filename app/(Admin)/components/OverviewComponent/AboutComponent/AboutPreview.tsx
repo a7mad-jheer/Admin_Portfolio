@@ -9,6 +9,7 @@ import { FaPlus } from "react-icons/fa";
 import DrawerOverlay from "../../Global/DrawerOverlay";
 import About from "../../SettingComponent/About";
 import AboutCard from "./AboutCard";
+import { MdEdit } from "react-icons/md";
 
 type aboutKeys = "about" | "experience" | "goals";
 type aboutDataType = {
@@ -67,8 +68,13 @@ export const AboutPreview = ({ aboutSupabase, user_id }: props) => {
     setAboutData((prev) => ({ ...prev, [selectedItem]: data }));
   };
 
+  const handleUpdateData = (data : aboutDataType) => {
+    setAboutData(data);
+    setShowAdd(false);
+  }
+
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <ConfirmDelete
         onConfirm={handleDelete}
         onCancel={() => {
@@ -87,12 +93,12 @@ export const AboutPreview = ({ aboutSupabase, user_id }: props) => {
         title="About section"
         description="Add about informations"
       >
-        <About />
+        <About user_id ={user_id} onUpdate={(data : aboutDataType) => handleUpdateData(data)}/>
       </DrawerOverlay>
 
       {aboutData.id === null ? (
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl my-5 font-semibold">About Me</h1>
+        <div className="flex items-center gap-5 mt-5 ">
+          <h1 className="text-xl  font-semibold">About Me</h1>
           <span
             onClick={() => setShowAdd(true)}
             className="text-white/70 bg-black/40 h-9 w-9 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all duration-200 hover:scale-110 cursor-pointer "
@@ -101,7 +107,17 @@ export const AboutPreview = ({ aboutSupabase, user_id }: props) => {
           </span>
         </div>
       ) : (
-        <h1 className="text-xl my-5 font-semibold">About Me</h1>
+        <div className="flex items-center gap-5 mt-5 ">
+          <h1 className="text-xl  font-semibold">About Me</h1>
+          {aboutData.id !== null && (
+            <span
+              onClick={() => {setShowAdd(true)}}
+              className="text-white/70 bg-black/40 h-9 w-9 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-200 hover:scale-110 cursor-pointer "
+            >
+              <MdEdit />
+            </span>
+          )}
+        </div>
       )}
 
       {message && <ToastError message={message} />}
@@ -113,6 +129,10 @@ export const AboutPreview = ({ aboutSupabase, user_id }: props) => {
         setSelectedItem={setSelectedItem}
         setDeleteCliced={setDeleteCliced}
       />
+
+      {showAdd && (
+        <div className="fixed z-40 top-0 left-0 bg-black/50 w-full h-screen backdrop-blur-md"></div>
+      )}
     </div>
   );
 };

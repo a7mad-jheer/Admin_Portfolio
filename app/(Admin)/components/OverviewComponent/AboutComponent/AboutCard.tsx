@@ -173,19 +173,6 @@ export const AboutCard = ({
                 <p className="text-xs text-gray-400 ml-3">
                   {text.value || "No data yet!"}
                 </p>
-
-                {data.id !== null && (
-                  <IconAction
-                    onConfirm={() => {
-                      setSelectedItem(text.name);
-                      setInputValue(text.value);
-                    }}
-                    onCancel={() => {
-                      setDeleteCliced(true);
-                      setSelectedItem(text.name);
-                    }}
-                  />
-                )}
               </div>
             )}
           </div>

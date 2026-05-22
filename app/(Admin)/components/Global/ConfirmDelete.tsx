@@ -2,6 +2,7 @@ type statusType = {
   success : boolean,
   error : boolean,
   loading : boolean,
+
 }
 
 type props = {

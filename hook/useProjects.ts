@@ -10,7 +10,7 @@ type project_Type = {
   url: string | null;
 };
 
-export const useProjects = (user_id : string | null | undefined) => {
+export const useProjects = (user_id : string | null ) => {
   const [projects, setProjects] = useState<project_Type[]>([]);
 
   //fetch category from supabase :

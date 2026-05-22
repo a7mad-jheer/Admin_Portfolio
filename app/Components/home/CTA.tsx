@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const CTA = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center px-6 ">
+        <div className="min-h-screen flex items-center justify-center px-6 mb-40 ">
          
          <div className="relative text-center space-y-6 gap-6 max-w-2xl">
                 <div className="absolute inset-0 bg-blue-500/10 blur-3xl"/>

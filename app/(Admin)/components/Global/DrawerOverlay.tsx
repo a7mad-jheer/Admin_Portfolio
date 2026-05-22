@@ -25,7 +25,6 @@ export const DrawerOverlay = ({
 
   return (
     <>
-      {drawerShow && (
         <div
       className={`transform  transition-transform duration-700 ease-in-out fixed  scroll-auto overflow-y-auto z-50 top-0 right-0 w-full md:w-[40%]  h-screen ${drawerShow ? "translate-x-0 " : "translate-x-full"} bg-zinc-900 text-white p-4`}
     >
@@ -46,7 +45,6 @@ export const DrawerOverlay = ({
         </div>
       
     </div>
-    )}
     </>
   );
 };

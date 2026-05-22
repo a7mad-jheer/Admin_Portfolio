@@ -1,30 +1,29 @@
 "usclient";
-import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import z from "zod";
 import { AddProjectFormSchema } from "@/Schema/authSchema";
 import { ToastError } from "../Error/ToastError";
-import { MdImage, MdClose } from "react-icons/md";
 import ErrorSchema from "../Error/ErrorSchema";
-import NProgress from "nprogress";
-import { useUser } from "@/Context/UserInfoContext";
 import { useUpload } from "@/hook/api/useUpload";
 import { useGetImageUrl } from "@/hook/api/useGetImageUrl";
 import { useInsertData } from "@/hook/api/useInsertData";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
 import { useLockScroll } from "@/hook/ui/useLockScroll";
+import AddImage from "../Global/AddImage";
+import { supabase } from "@/lib/supabase";
 
 type PROJECT_STATE = {
   name: string;
   description: string;
   url: string;
-  categoryId: string | null;
+  categoryId: number | null;
+  user_id : string
 };
 type project_Type = {
   categoryId: number | null;
   description: string | null;
-  id: string | null;
+  id: number | null;
   image: string | null;
   name: string | null;
   url: string | null;
@@ -39,7 +38,8 @@ type AddFormProps_Type = {
   };
   onAddProject: (data: project_Type) => void;
   setAddProject: React.Dispatch<React.SetStateAction<boolean>>;
-  addProject : boolean
+  addProject : boolean,
+  user_id : string
 };
 
 type PROJECT_TYPE = z.infer<typeof AddProjectFormSchema>;
@@ -49,21 +49,20 @@ export const AddProjectForm = ({
   onAddProject,
   setAddProject,
   addProject,
+  user_id 
 }: AddFormProps_Type) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [project, setProject] = useState<PROJECT_STATE>({
     name: "",
     description: "",
     url: "",
-    categoryId: "",
+    categoryId: null,
+    user_id : ""
   });
   const [errorSchema, setErrorSchema] = useState<
     Partial<Record<keyof PROJECT_TYPE, string>>
   >({});
-
-  const { userInfo } = useUser();
 
   /* api operations */
   const { uploadImage } = useUpload();
@@ -74,42 +73,6 @@ export const AddProjectForm = ({
   /* api operations */
 
 
-  /* OnDrop ,  */
-  const handleOnDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    if (files.length <= 0) return;
-
-    const file = files[0];
-    setImageFile(file);
-
-    const preview = URL.createObjectURL(file);
-    setPreview(preview);
-  };
-
-  /*on Drage Over */
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
-  /* Delete Image */
-  const deleteImage = () => {
-    setImageFile(null);
-    setPreview(null);
-  };
-
-  /*  GET IMAGE AND URL */
-  const handelAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const files = e.target.files?.[0];
-    if (!files) return;
-
-    console.log(files);
-    setImageFile(files);
-
-    const previewUrl = URL.createObjectURL(files);
-    setPreview(previewUrl);
-  };
 
   /* URL REVOKE TO CLEAR MEMORY */
   useEffect(() => {
@@ -154,13 +117,10 @@ export const AddProjectForm = ({
     setErrorSchema({});
 
     if (status.loading) return;
-    NProgress.start();
-
     loading()
 
       if (!imageFile) {
         setErrorSchema({ image: "Image is requierd" });
-        NProgress.done();
         return;
       }
 
@@ -178,7 +138,17 @@ export const AddProjectForm = ({
 
       const imageUrl = data.publicUrl;
 
-      /* insert data to project supabase */
+      const {count , error:allProjectsError} = await supabase.from("projects").select("*" , {count : "exact" , head : true}).eq("user_id" , user_id).eq("categoryId" , categorySelected.id);
+
+      if(allProjectsError) {
+        console.log("there is problem when select all projects to check the name of project", allProjectsError);
+        fail();
+        show("Something went wrong while adding the project.")
+        return;
+      }
+
+      if((count ?? 0) < 3) {
+         /* insert data to project supabase */
       const { data: inserData, error: insertError } = await insertData(
         "projects",
         {
@@ -187,7 +157,7 @@ export const AddProjectForm = ({
           url: project.url,
           image: imageUrl,
           categoryId: categorySelected.id,
-          user_id: userInfo?.user_id,
+          user_id: user_id,
         },
         true,
       );
@@ -198,32 +168,48 @@ export const AddProjectForm = ({
         show("Something went wrong while adding the project.")
         return;
       };
-      
-      success();
-      show("Project added successfully.")
-      NProgress.done();
+
       onAddProject({
         id: inserData.id,
-        name: project.name,
-        description: project.description,
-        url: project.url,
-        image: imageUrl,
-        categoryId: categorySelected.id,
-        user_id: userInfo?.user_id || null,
+        name: inserData.name,
+        description: inserData.description,
+        url: inserData.url,
+        image: inserData.image,
+        categoryId: inserData.categoryId,
+        user_id: inserData.user_id,
       });
+
+      success();
+      show("Project added successfully.")
+      
       console.log(categorySelected);
 
       setProject({
         name: "",
         description: "",
         url: "",
-        categoryId: "",
+        categoryId: null,
+        user_id : ""
       });
 
       setPreview(null);
       setImageFile(null);
       setAddProject(false);
+      return;
+      }
+      
+      fail();
+      show("You have reached the maximum number of projects allowed. Please delete an existing project before adding a new one.");
+      return;
   };
+
+
+  const handleImageFile = (data :  File | null) => {
+    if(!data) {
+      console.log("there is no image file => " , data);
+   }
+    setImageFile(data);
+  }
 
     /* hidden Scroll When ShowEdit is true */
   useLockScroll(addProject);
@@ -235,48 +221,16 @@ export const AddProjectForm = ({
       className="bg-[hsl(0deg 0% 12.94%)] flex flex-col gap-2 p-2 shadow-2xl rounded-md"
     >
       {/*Start Error Message*/}
-      {message && <ToastError message={message}/>};
+      {message && <ToastError message={message}/>}
       {errorSchema.image && <ErrorSchema errorSchema={errorSchema.image} />}
       {/*End Error Message*/}
 
       {/*Start Add Image*/}
-      <div
-        onClick={() => inputRef.current?.click()}
-        onDrop={handleOnDrop}
-        onDragOver={(e) => handleDragOver(e)}
-        className="border border-dashed w-full h-64 flex justify-center items-center relative cursor-pointer mb-5 mt-2"
-      >
-        {preview ? (
-          <div>
-            <Image src={`${preview}`} alt="" fill className="bg-cover" />
-            <span
-              onClick={deleteImage}
-              className="absolute top-2 right-2  border-3 border-white bg-red-900 hover:bg-red-700 text-white rounded-md cursor-pointer"
-            >
-              <MdClose />
-            </span>
-          </div>
-        ) : (
-          <div className="">
-            <input
-              hidden
-              type="file"
-              accept="image/*"
-              ref={inputRef}
-              onChange={handelAddImage}
-              onDrop={handleOnDrop}
-              disabled={status.loading}
-            />
-            <div className="flex flex-col items-center">
-              <MdImage size={100} className="text-blue-600" />
-              <p className="text-xl font-semibold ">
-                Drag & Drop Project Image
-              </p>
-            </div>
-          </div>
-        )}
-        {/*End Add Image*/}
-      </div>
+      <AddImage 
+        imageUrl={preview}
+        onAddImageFile={(data) => handleImageFile (data )}
+        errorSchema={{}}
+      />
       {errorSchema.name && <ErrorSchema errorSchema={errorSchema.name} />}
       <input
         value={project?.name}
