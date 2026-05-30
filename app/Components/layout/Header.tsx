@@ -2,7 +2,6 @@
 import { NavBar } from ".";
 import { FaFacebook } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { AiFillInstagram } from "react-icons/ai";
 import { FaLinkedin } from "react-icons/fa";
 import { IoIosMailUnread } from "react-icons/io";
 import { NavItem } from "@/config/navigation";
