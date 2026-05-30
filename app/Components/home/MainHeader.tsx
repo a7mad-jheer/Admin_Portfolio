@@ -1,12 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
+import Logo from "../global/Logo";
 
 export const MainHeader = () => {
   return (
     <div className="fixed flex items-center justify-between top-0 left-0 px-6 h-16 bg-black/40 backdrop-blur-md border-b border-white/10 w-full z-50 shadow-md shadow-white/10">
-      <div className="relative h-10 w-20 cursor-pointer hover:opacity-80 transition">
-        <Image alt="" src="/Logo.png" fill className="object-cover" />
-      </div>
+      <Logo/>
 
       <div className="text-white flex gap-2">
         <Link href="/login" className="bg-white/10 hover:bg-white/20 text-white  rounded-full py-1.5 px-5 cursor-pointer transition">Login</Link >

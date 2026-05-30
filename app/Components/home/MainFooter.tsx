@@ -2,6 +2,7 @@ import Image from "next/image";
 import { BiLogoGmail } from "react-icons/bi";
 import { FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 import { PiGithubLogoFill } from "react-icons/pi";
+import Logo from "../global/Logo";
 
 const MainFooter = () => {
   const contactMethods = [
@@ -42,9 +43,7 @@ const MainFooter = () => {
       
       {/* Logo Section */}
       <div className="flex flex-col items-center text-center">
-        <div className="relative h-10 w-20 cursor-pointer hover:opacity-80 transition">
-          <Image alt="JheAr Logo" src="/Logo.png" fill className="object-cover" />
-        </div>
+       <Logo/>
 
         <p className="text-gray-400 text-xs mt-2">
           Build your portfolio in minutes

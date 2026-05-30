@@ -14,11 +14,11 @@ export default async function PortfolioPage({ params }: pageProps) {
 
   console.log(username)
 
-  const {data , error} = await supabase.from("profile").select("user_id").eq("user_name" , username).single();
+  const {data , error} = await supabase.from("profile").select("user_id").eq("user_name" , username).maybeSingle();
 
-  if(error || !data) {
+  if(!data) {
     console.log("there is error when fetch user_id from profile table in portfolio page" , error);
-    return <ToastError message={"Something went wrong! , please check your internt connection"} />
+    return <ToastError message={"Portfolio not found"} />
   }
 
   const user_id = data.user_id;

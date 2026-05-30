@@ -1,9 +1,10 @@
 import Image from "next/image";
 export const Logo = () => {
   return (
-    <div className="relative w-30 md:w-30 h-13 md:m-auto m-0">
-      <Image fill src="/LOGO.png" alt="" className="object-cover " />
-    </div>
+
+     <div className="relative h-10 w-20 cursor-pointer hover:opacity-80 transition flex gap-5  rounded-md  z-10 ">
+              <Image alt="JheAr" src="/LOGO.png" fill className="object-cover text-red-500 p-2 font-bold bg-transparent z-50 " />
+            </div>
   );
 };
 
