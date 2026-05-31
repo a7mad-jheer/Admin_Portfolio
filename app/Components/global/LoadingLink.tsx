@@ -1,20 +1,34 @@
 import { useLoading } from "@/hook/ui/useLoading";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 type props = {
     href: string;
     children: React.ReactNode;
-    style ?: string
+    styleLoading ?: string
+    posthogText ?: string; 
 }
 
-export const LoadingLink = ({ href, children , style } : props) => {
+export const LoadingLink = ({ href, children , styleLoading , posthogText } : props) => {
   const { setLoading } = useLoading();
+
+  const handleClicked = () => {
+    setLoading(true)
+
+    if(posthogText) {
+      posthog.capture(posthogText, {
+        href, 
+        label : "LaodingLink"
+      })
+    }
+  }
 
   return (
     <Link
       href={href}
-      onClick={() => setLoading(true)}
-      className={style}
+      onClick={handleClicked}
+      className={styleLoading}
+
     >
       {children}
     </Link>

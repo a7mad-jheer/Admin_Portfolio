@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client"
+import { LoadingLink } from "../global/LoadingLink";
 
 export const CTA = () => {
     return (
@@ -10,7 +11,7 @@ export const CTA = () => {
 
                <p className="text-base text-gray-400 font-semibold ">Start building your website in 5 minutes with power full tools, modren design and scalable architecture.</p>
 
-            <Link href="/signup" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full shadow-2xl shadow-blue-600 trasnition duration-150 hover:scale-105  hover:cursor-pointer font-bold">Get Start</Link>
+            <LoadingLink posthogText="signup_freeTrial_click" href="/signup" styleLoading="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full shadow-2xl shadow-blue-600 trasnition duration-150 hover:scale-105  hover:cursor-pointer font-bold">Get Start</LoadingLink>
          </div>
 
         </div>

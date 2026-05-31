@@ -21,6 +21,7 @@
     "next": "^16.1.6",
     "nodemailer": "^7.0.13",
     "nprogress": "^0.2.0",
+    "posthog-js": "^1.376.5",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-hook-form": "^7.72.0",

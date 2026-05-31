@@ -19,13 +19,8 @@ export default async function Home() {
     return (
         <SplashLoading>
         <ParticlesBasic>
-
-
             <MainHeader /> 
             <MainHero />
-
-        
-
             <SliderPreview />
             <MainFeature/>
             <Pricing />

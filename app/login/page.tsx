@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase";
 import { useInsertData } from "@/hook/api/useInsertData";
 import { useSelectData } from "@/hook/api/useSelectData";
 import { useRouter } from "next/navigation";
+import { LoadingLink } from "../Components/global/LoadingLink";
 
 type LoginData_Type = {
   email: string | null;
@@ -56,7 +57,6 @@ const form = {
 };
 
 export default function Login() {
-
   const [loginData, setLoginData] = useState<LoginData_Type>({
     email: "",
     password: "",
@@ -68,10 +68,9 @@ export default function Login() {
   /* api operations */
   const { status, loading, fail, success } = useReqStatus();
   const { show, message } = useToast();
-  const {insertData} = useInsertData();
-  const {selectWithSingle} = useSelectData();
+  const { insertData } = useInsertData();
+  const { selectWithSingle } = useSelectData();
   /* api operations */
-
 
   const router = useRouter();
 
@@ -106,12 +105,12 @@ export default function Login() {
 
     const contentType = res.headers.get("content-type");
 
-    if(!contentType?.includes("application/json")){
+    if (!contentType?.includes("application/json")) {
       const text = await res.text();
 
-      console.log("Invalid response :" , text);
+      console.log("Invalid response :", text);
 
-      show("Somthing went error!, please refresh the page and try again.")
+      show("Somthing went error!, please refresh the page and try again.");
     }
 
     const resultFetch = await res.json();
@@ -124,47 +123,50 @@ export default function Login() {
       return;
     }
 
-    const {data : {user} , error} = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-    if(error) {
+    if (error) {
       fail();
       show("Failed to retrieve user data. Please try again.");
       return;
     }
 
-    if(!user) {
+    if (!user) {
       return router.replace("/login");
     }
 
-    const {data : profileData , error : profileError} = await selectWithSingle("profile" , [{column : "user_id" , value : user.id}])
+    const { data: profileData, error: profileError } = await selectWithSingle(
+      "profile",
+      [{ column: "user_id", value: user.id }],
+    );
 
-
-    if(profileError) {
+    if (profileError) {
       console.log(profileError);
       fail();
       show("Failed to retrieve user profile. Please try again.");
       return;
     }
 
-    if(!profileData) {
-      const {data , error } = await insertData("profile" , {
-        user_id : user.id ,
-        name : user.user_metadata.name ,
-        user_name : user.user_metadata.user_name ,
-        email : user.email,
-        isSubscribed : false,
-        trialEndsAt : null
-      })
+    if (!profileData) {
+      const { data, error } = await insertData("profile", {
+        user_id: user.id,
+        name: user.user_metadata.name,
+        user_name: user.user_metadata.user_name,
+        email: user.email,
+        isSubscribed: false,
+        trialEndsAt: null,
+      });
 
-      if(error) {
+      if (error) {
         console.log(error);
         fail();
         show("Failed to create user profile. Please try again.");
         return;
       }
-
     }
-
 
     show("Login Successfully.");
     setLoginData({
@@ -173,8 +175,8 @@ export default function Login() {
     });
 
     router.refresh();
-    router.replace("/Admin/overview")
-    success()
+    router.replace("/Admin/overview");
+    success();
   };
 
   return (
@@ -247,12 +249,15 @@ export default function Login() {
               placeholder="Enter Your Password"
               className="bg-gray-400/30  text-white p-2  rounded-md outline-none"
             />
-            <button
-              type="submit"
-              className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700 cursor-pointer hover:scale-105 transition"
-            >
-              {status.loading ? "wait..." : "Login Now"}
-            </button>
+            <LoadingLink href="/Admin/overview" styleLoading="m-auto">
+              <button
+                type="submit"
+                className="text-white bg-blue-500/60 py-2 px-8 mt-5 rounded-full w-fit hover:blue-700 cursor-pointer hover:scale-105 transition"
+              >
+                {status.loading ? "wait..." : "Login Now"}
+              </button>
+            </LoadingLink>
+
             <p className="text-center text-sm text-gray-500">
               Dont have an account?{" "}
               <Link

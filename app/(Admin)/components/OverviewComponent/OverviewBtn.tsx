@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createSupabaseServer } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
+import PortfolioBtn from "./PortfolioBtn";
 
 export const OverviewBtn = async () => {
     const supabase = await createSupabaseServer();
@@ -20,11 +21,7 @@ if (error || !data) {
   console.log(data.user_name)
 
     return (
-        <Link href={`/portfolio/${data.user_name}`} >
-          <h1 className=" w-fit py-2 px-3 rounded text-white border border-gray-700 text-semibold bg-gradient-to-r from-blue-900 to-teal-800
-        hover:from-emerald-800 hover:to-teal-900 ">View Portfolio</h1>
-        </Link>
-      
+        <PortfolioBtn username = {data.user_name}/>
     )
 }
 

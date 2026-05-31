@@ -1,5 +1,6 @@
-import Link from "next/link";
+"use client"
 import Logo from "../global/Logo";
+import { LoadingLink } from "../global/LoadingLink";
 
 export const MainHeader = () => {
   return (
@@ -7,8 +8,8 @@ export const MainHeader = () => {
       <Logo/>
 
       <div className="text-white flex gap-2">
-        <Link href="/login" className="bg-white/10 hover:bg-white/20 text-white  rounded-full py-1.5 px-5 cursor-pointer transition">Login</Link >
-        <Link href="/signup" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md shadow-blue-500/50 py-1.5 px-5 rounded-full cursor-pointer transition ">Get Start</Link>
+        <LoadingLink posthogText="Login_clicked" href="/login" styleLoading="bg-white/10 hover:bg-white/20 text-white  rounded-full py-1.5 px-5 cursor-pointer transition" >Login</LoadingLink >
+        <LoadingLink posthogText="Signup_clicked" href="/signup" styleLoading="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md shadow-blue-500/50 py-1.5 px-5 rounded-full cursor-pointer transition ">Get Start</LoadingLink>
       </div>
     </div>
   );

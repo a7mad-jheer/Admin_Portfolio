@@ -1,10 +1,9 @@
 "use client";
 import { FaStar } from "react-icons/fa";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import { LoadingLink } from "../global/LoadingLink";
 
-
-const MotionLink = motion(Link)
+const MotionLink = motion(LoadingLink)
 
 export const MainHero = () => {
   const container = {
@@ -58,10 +57,12 @@ export const MainHero = () => {
 
       <MotionLink
         href="/signup"
+        styleLoading="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xl shadow-blue-500/50 py-2.5 px-8 rounded-full cursor-pointer transition "
+        posthogText = "signup_clicked"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.97 }}
         variants={item}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xl shadow-blue-500/50 py-2.5 px-8 rounded-full cursor-pointer transition "
+        
       >
         Get Start
       </MotionLink>

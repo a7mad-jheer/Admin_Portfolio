@@ -5,6 +5,9 @@ import { UserProvider } from "@/Context/UserInfoContext";
 import RouteLoading from "./Components/global/RouteLoading";
 import { LoadingProvider } from "@/Context/LoadingContext";
 import ResetLoading from "./Components/layout/ResetLoading";
+import { PostHogProvider } from "./providers";
+import { PostHogPageView } from "./PostHogPageView";
+import { Suspense } from "react";
 
 
 export const metadata: Metadata = {
@@ -20,17 +23,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        
-       <UserProvider>
-        <main>
-          <LoadingProvider>
-          <RouteLoading>
-            <ResetLoading/>
-          {children}
-          </RouteLoading>
-          </LoadingProvider>
-          </main>
-        </UserProvider>
+        <PostHogProvider>
+          <Suspense fallback={null}>
+            <PostHogPageView />
+          </Suspense>
+          <UserProvider>
+            <main>
+              <LoadingProvider>
+                <RouteLoading>
+                  <ResetLoading />
+                  {children}
+                </RouteLoading>
+              </LoadingProvider>
+            </main>
+          </UserProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

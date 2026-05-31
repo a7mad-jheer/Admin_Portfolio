@@ -13,6 +13,7 @@ import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
 import { useInsertData } from "@/hook/api/useInsertData";
 import { useRouter } from "next/navigation";
+import { LoadingLink } from "../Components/global/LoadingLink";
 
 
 const container = {
@@ -219,13 +220,19 @@ const handleSendData = async (e: React.FormEvent) => {
             type="password" placeholder="Enter Your Password" 
             className="bg-gray-400/30  text-white p-2  rounded-md outline-none"
           />
-          <button 
+          <LoadingLink
+            href="/Admin/overview"
+          >
+            <button 
             type="submit"
              disabled={status.loading}
             className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700">
               {status.loading ? "wait..." : "Sign Up"}
               </button>
-            <Link href="/login" className="text-blue-800 text-xs text-center underline">Go to login page</Link>
+          </LoadingLink>
+          
+
+            <LoadingLink posthogText = "signUptoIn_Clicked" href="/login" styleLoading="text-blue-800 text-xs text-center underline">Go to login page</LoadingLink>
         </form>
       </motion.div>
     </div>
