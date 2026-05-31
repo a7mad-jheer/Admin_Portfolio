@@ -106,26 +106,26 @@ export const Header = ({ active , data}: props) => {
 ];
 
   return (
-    <div className="fixed flex justify-between p-5 xl:grid xl:grid-cols-12 top-0 right-0 z-50  w-full items-center bg-black/20 backdrop-blur-2xl xl:px-15 xl:py-5 h-20 ">
+    <div className="fixed w-full xl:grid xl:grid-cols-[2fr_1fr_2fr] flex justify-between  p-5 items-center  top-0 right-0 z-50   bg-black/20 backdrop-blur-2xl xl:px-15 xl:py-5 h-20 ">
       {/* First Cols from grid */}
-      <div className="col-span-4 hidden xl:block">
-        <NavBar objData={NavItems} active={active} />
+      <div className=" hidden xl:block  w-full  ">
+        <NavBar objData={NavItems} active={active}  />
       </div>
 
       {/* Second Cols from grid */}
-      <h1 className=" -HERRO__LOGO-">
-        <Logo />
-      </h1>
+       <div className=" xl:w-full flex items-ceneter xl:justify-center  xl:m-auto  items-center text-center ">
+         <Logo />
+       </div>
 
       {/* Third Cols from grid */}
-      <div className="col-span-4 hidden xl:block">
-        <div className="flex flex-wrap gap-2 justify-between items-center  z-10 ">
+      <div className=" hidden xl:block w-full  ">
+        <div className="flex gap-12 justify-end w-full">
           {socialMedia.map((item) => {
             return (
               <a
                 key={item.id}
                 href={item.href}
-                className="hover:text-white  text-white/60 cursor-point xl:text-3xl"
+                className="hover:text-white  text-white/60 transition-colors duration-300 cursor-point xl:text-3xl"
                 target="_blank"
                 rel="noopener noreferrer"
               >

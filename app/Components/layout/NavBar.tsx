@@ -7,7 +7,7 @@ export const NavBar = ({active , objData} : {active ?: string , objData:NavItem[
 
 
     return (
-        <div className="flex justify-between items-center ">     
+        <div className="flex w-full justify-between items-center ">     
             {objData.map(
                 (item) => {
                     return (
