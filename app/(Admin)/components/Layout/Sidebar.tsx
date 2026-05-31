@@ -96,8 +96,8 @@ export const Sidebar = ({showSidebar , setShowSidebar} : props) => {
           onClick={() => setShowSidebar(false)}
           key={item.id}>
             <LoadingLink href={item.href}
-              
-            style="flex items-center justify-between rounded-md hover:bg-[#313131] transition-colors duration-200 ">
+              posthogText={`${item.name}_clicked`}
+            styleLoading="flex items-center justify-between rounded-md hover:bg-[#313131] transition-colors duration-200 ">
             <div className="flex items-center py-1 px-2 gap-3 pointer-events-none group-hover:pointer-events-auto">
               <span className="text-2xl">
               {<item.icon />}
