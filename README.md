@@ -41,13 +41,8 @@ cp .env.example .env.local
 npm run dev
 
 ## 🔑 Environment Variables
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_POSTHOG_KEY=
-NEXT_PUBLIC_POSTHOG_HOST=
+NEXT_PUBLIC_SUPABASE_URL=*********
+NEXT_PUBLIC_SUPABASE_ANON_KEY=********
+NEXT_PUBLIC_POSTHOG_KEY=*******
+NEXT_PUBLIC_POSTHOG_HOST=********
 
-## 📸 Screenshots
-<!-- Add screenshots here -->
-
-## 📄 License
-MIT
