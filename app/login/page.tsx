@@ -15,6 +15,7 @@ import { useInsertData } from "@/hook/api/useInsertData";
 import { useSelectData } from "@/hook/api/useSelectData";
 import { useRouter } from "next/navigation";
 import { LoadingLink } from "../Components/global/LoadingLink";
+import { useLoading } from "@/hook/ui/useLoading";
 
 type LoginData_Type = {
   email: string | null;
@@ -65,6 +66,8 @@ export default function Login() {
     Partial<Record<keyof loginInfer, string>>
   >({});
 
+  const {setLoading} = useLoading();
+
   /* api operations */
   const { status, loading, fail, success } = useReqStatus();
   const { show, message } = useToast();
@@ -89,7 +92,9 @@ export default function Login() {
     }
     setErrorSchema({});
 
+    setLoading(true);
     loading();
+    
 
     //now we need to send user data to server side to create cookies;
     const res = await fetch("/api/login", {
@@ -168,11 +173,12 @@ export default function Login() {
       }
     }
 
-    show("Login Successfully.");
+    show("Login Successfully, please wait ...");
     setLoginData({
       email: "",
       password: "",
     });
+    setLoading(false);
 
     router.refresh();
     router.replace("/Admin/overview");
@@ -249,14 +255,12 @@ export default function Login() {
               placeholder="Enter Your Password"
               className="bg-gray-400/30  text-white p-2  rounded-md outline-none"
             />
-            <LoadingLink href="/Admin/overview" styleLoading="m-auto">
               <button
                 type="submit"
                 className="text-white bg-blue-500/60 py-2 px-8 mt-5 rounded-full w-fit hover:blue-700 cursor-pointer hover:scale-105 transition"
               >
                 {status.loading ? "wait..." : "Login Now"}
               </button>
-            </LoadingLink>
 
             <p className="text-center text-sm text-gray-500">
               Dont have an account?{" "}
