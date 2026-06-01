@@ -1,33 +1,26 @@
-# Ahmed Jheer Portfolio
+## Ahmed Jheer Portfolio
 
-Welcome to my **personal portfolio website** built with **Next.js 13, TypeScript, and Tailwind CSS**.  
-This project showcases my **projects, skills, and contact information** in a modern and responsive design.
+Personal portfolio website built with Next.js 13, TypeScript, Tailwind CSS, and Supabase.  
+It allows users to manage and showcase projects, skills, and personal information through a modern responsive interface.
 
 ---
 
 ## 🚀 Features
-
-- Fully **responsive design** for **Desktop, Tablet, and Mobile**  
-- **Landing page** with a **fixed header**  
-- Dynamic **Navigation Bar** highlighting the active section  
-- **Projects** section displaying my work  
-- **Skills** section showcasing my abilities  
-- **About Me** section  
-- **Contact page** with interactive icons: Email, WhatsApp, Instagram, LinkedIn, Facebook  
-- **Download screenshots** as a ZIP file for preview  
-- Clean and modern UI using **Tailwind CSS**  
-- Built with **Next.js App Router** and **TypeScript** for scalability  
+- Fully responsive design (Desktop, Tablet, Mobile)
+- Authentication system using Supabase
+- Dynamic navigation with active section highlighting
+- Projects showcase section
+- Skills overview section
+- About Me section
+- Contact section with social links (Email, WhatsApp, LinkedIn, etc.)
+- Built with Next.js App Router
+- Secure data handling using Supabase backend services
 
 ---
 
-## 🛠 Technologies Used
-
-- **Next.js 13** (App Router)  
-- **TypeScript**  
-- **Tailwind CSS**  
-- **React Icons**  
-
----
-
-## 📂 Folder Structure
-
+## 🛠 Technologies
+- Next.js 13 (App Router)
+- TypeScript
+- Tailwind CSS
+- Supabase (Authentication, Database)
+- React Icons
