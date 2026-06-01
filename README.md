@@ -1,26 +1,53 @@
-## Ahmed Jheer Portfolio
+# 🗂️ Portfolio Admin — SaaS Portfolio Builder
 
-Personal portfolio website built with Next.js 13, TypeScript, Tailwind CSS, and Supabase.  
-It allows users to manage and showcase projects, skills, and personal information through a modern responsive interface.
+A full-stack SaaS platform that lets users build and manage 
+their personal portfolio through a secure admin dashboard — 
+with a unique public portfolio link generated for each user.
 
----
+## 🌐 Live Demo
+👉 [Try it now](https://admin-portfolio-delta-flame.vercel.app/)
 
-## 🚀 Features
-- Fully responsive design (Desktop, Tablet, Mobile)
-- Authentication system using Supabase
-- Dynamic navigation with active section highlighting
-- Projects showcase section
-- Skills overview section
-- About Me section
-- Contact section with social links (Email, WhatsApp, LinkedIn, etc.)
-- Built with Next.js App Router
-- Secure data handling using Supabase backend services
+## ✨ Features
+- 🔐 Authentication (Sign up / Login / Email verification)
+- 🛡️ Protected admin dashboard with route management
+- 📁 Full CRUD — manage projects, skills & personal info
+- 🌍 Auto-generated public portfolio page per user
+- 📊 User analytics & behavior tracking with PostHog
+- 📱 Fully responsive design (mobile-first)
 
----
+## 🛠️ Tech Stack
+| Layer      | Technology                        |
+|------------|-----------------------------------|
+| Frontend   | Next.js (App Router), TypeScript  |
+| Styling    | Tailwind CSS                      |
+| Backend/DB | Supabase (Auth + PostgreSQL)      |
+| Analytics  | PostHog                           |
+| Deployment | Vercel                            |
 
-## 🛠 Technologies
-- Next.js 13 (App Router)
-- TypeScript
-- Tailwind CSS
-- Supabase (Authentication, Database)
-- React Icons
+## 🏗️ Architecture
+- Next.js App Router with SSR for dynamic portfolio pages
+- Supabase Auth with protected middleware routes
+- PostgreSQL database with RLS (Row Level Security)
+- Each user gets a unique public URL: /portfolio/[username]
+
+## 🚀 Run Locally
+git clone https://github.com/a7mad-jheer/Admin_Portfolio.git
+cd Admin_Portfolio
+npm install
+
+# Add your environment variables
+cp .env.example .env.local
+
+npm run dev
+
+## 🔑 Environment Variables
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_POSTHOG_KEY=
+NEXT_PUBLIC_POSTHOG_HOST=
+
+## 📸 Screenshots
+<!-- Add screenshots here -->
+
+## 📄 License
+MIT
