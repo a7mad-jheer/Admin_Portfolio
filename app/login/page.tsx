@@ -114,7 +114,7 @@ export default function Login() {
       const text = await res.text();
 
       console.log("Invalid response :", text);
-
+      setLoading(false);
       show("Somthing went error!, please refresh the page and try again.");
     }
 
@@ -125,6 +125,7 @@ export default function Login() {
       console.log(resultFetch);
       fail();
       show("Somthing went error , please try again!");
+      setLoading(false);
       return;
     }
 
@@ -135,12 +136,14 @@ export default function Login() {
 
     if (error) {
       fail();
+      setLoading(false);
       show("Failed to retrieve user data. Please try again.");
       return;
     }
 
     if (!user) {
       return router.replace("/login");
+      setLoading(false);
     }
 
     const { data: profileData, error: profileError } = await selectWithSingle(
@@ -151,7 +154,9 @@ export default function Login() {
     if (profileError) {
       console.log(profileError);
       fail();
+      setLoading(false);
       show("Failed to retrieve user profile. Please try again.");
+      setLoading(false);
       return;
     }
 
@@ -168,6 +173,7 @@ export default function Login() {
       if (error) {
         console.log(error);
         fail();
+        setLoading(false);
         show("Failed to create user profile. Please try again.");
         return;
       }
@@ -178,8 +184,8 @@ export default function Login() {
       email: "",
       password: "",
     });
-    setLoading(false);
 
+    setLoading(false);
     router.refresh();
     router.replace("/Admin/overview");
     success();

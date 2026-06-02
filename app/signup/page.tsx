@@ -14,6 +14,7 @@ import { useToast } from "@/hook/ui/useToast";
 import { useInsertData } from "@/hook/api/useInsertData";
 import { useRouter } from "next/navigation";
 import { LoadingLink } from "../Components/global/LoadingLink";
+import { useLoading } from "@/hook/ui/useLoading";
 
 
 const container = {
@@ -66,6 +67,8 @@ export default  function Signup() {
   })
    const [errorSchema , setErrorSchema ] = useState<Partial<Record<keyof signupSchema , string>>>({})
 
+  const {setLoading} = useLoading();
+
   /*api opertations */
   const {status , loading , success , fail} = useReqStatus();
   const {show , message} = useToast();
@@ -79,6 +82,8 @@ const handleSendData = async (e: React.FormEvent) => {
 
   if (status.loading) return;
 
+  setLoading(true)
+
   // 1. validation
   const result = SignupSchema.safeParse(signData);
 
@@ -89,6 +94,7 @@ const handleSendData = async (e: React.FormEvent) => {
       fieldError[err.path[0] as keyof signupSchema] = err.message;
     });
 
+    setLoading(false)
     setErrorSchema(fieldError);
     return;
   }
@@ -120,6 +126,7 @@ const handleSendData = async (e: React.FormEvent) => {
       console.log(signupError)
     }
 
+    setLoading(false)
     fail();
     return;
   }
@@ -127,6 +134,7 @@ const handleSendData = async (e: React.FormEvent) => {
 
   // 6. success flow
   success();
+  setLoading(false)
   // show("We’ve sent a confirmation email to your inbox.");
   show("signup Successfully , please wait to login")
   setSignData({
@@ -220,16 +228,13 @@ const handleSendData = async (e: React.FormEvent) => {
             type="password" placeholder="Enter Your Password" 
             className="bg-gray-400/30  text-white p-2  rounded-md outline-none"
           />
-          <LoadingLink
-            href="/Admin/overview"
-          >
+
             <button 
             type="submit"
              disabled={status.loading}
             className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700">
               {status.loading ? "wait..." : "Sign Up"}
               </button>
-          </LoadingLink>
           
 
             <LoadingLink posthogText = "signUptoIn_Clicked" href="/login" styleLoading="text-blue-800 text-xs text-center underline">Go to login page</LoadingLink>
