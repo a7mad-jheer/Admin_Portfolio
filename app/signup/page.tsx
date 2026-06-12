@@ -131,6 +131,9 @@ const handleSendData = async (e: React.FormEvent) => {
     return;
   }
 
+  //here we shoud put email confirm"
+  
+
 
   // 6. success flow
   success();

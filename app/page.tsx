@@ -1,23 +1,17 @@
+import dynmic from "next/dynamic"
 import ParticlesBasic from "./Components/global/ParticlesBasic";
 import SplashLoading from "./Components/global/SplashLoading";
 import CTA from "./Components/home/CTA";
 import MainFeature from "./Components/home/MainFeature";
 import MainFooter from "./Components/home/MainFooter";
 import MainHeader from "./Components/home/MainHeader";
-import MainHero from "./Components/home/MainHero";
 import Pricing from "./Components/home/Pricing";
 import SliderPreview from "./Components/home/SliderPreview";
 
-async function getData() {
-        await new Promise((resolve) => setTimeout(resolve , 2000));
-        return true;
-    }
+const MainHero = dynmic(() => (import("./Components/home/MainHero")))
 
-export default async function Home() {
-    await getData();
-
+export default  function Home() {
     return (
-        <SplashLoading>
         <ParticlesBasic>
             <MainHeader /> 
             <MainHero />
@@ -27,6 +21,5 @@ export default async function Home() {
             <CTA/>
             <MainFooter />
         </ParticlesBasic>
-    </SplashLoading>
     )
 }

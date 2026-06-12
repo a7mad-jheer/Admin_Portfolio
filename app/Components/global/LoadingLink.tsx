@@ -1,6 +1,8 @@
 import { useLoading } from "@/hook/ui/useLoading";
 import Link from "next/link";
 import posthog from "posthog-js";
+import { forwardRef } from "react";
+
 
 type props = {
     href: string;
@@ -9,7 +11,8 @@ type props = {
     posthogText ?: string; 
 }
 
-export const LoadingLink = ({ href, children , styleLoading , posthogText } : props) => {
+export const LoadingLink = forwardRef<HTMLAnchorElement, props>(
+  ({ href, children , styleLoading , posthogText },   ref) => {
   const { setLoading } = useLoading();
 
   const handleClicked = () => {
@@ -25,6 +28,7 @@ export const LoadingLink = ({ href, children , styleLoading , posthogText } : pr
 
   return (
     <Link
+    ref = {ref}
       href={href}
       onClick={handleClicked}
       className={styleLoading}
@@ -33,4 +37,7 @@ export const LoadingLink = ({ href, children , styleLoading , posthogText } : pr
       {children}
     </Link>
   );
-};
+}
+) 
+
+LoadingLink.displayName = "LoadingLink"
