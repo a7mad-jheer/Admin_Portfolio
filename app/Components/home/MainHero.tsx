@@ -16,7 +16,7 @@ export const MainHero = () => {
   };
 
   const item = {
-    hidden: { opacity: .5, y: -100 },
+    hidden: { opacity: .2, y: -100 },
     show: { opacity: 1, y: 0 },
   };
 
