@@ -1,6 +1,5 @@
 import dynmic from "next/dynamic"
 import ParticlesBasic from "./Components/global/ParticlesBasic";
-import SplashLoading from "./Components/global/SplashLoading";
 import CTA from "./Components/home/CTA";
 import MainFeature from "./Components/home/MainFeature";
 import MainFooter from "./Components/home/MainFooter";
