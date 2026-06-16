@@ -6,7 +6,7 @@ export const Description = ({
   style?: string;
 }) => {
   return (
-    <div className="mb-16 flex items-center justify-center">
+    <div className="mb-10 flex items-center justify-center">
       <h1
         className={`
           relative inline-block

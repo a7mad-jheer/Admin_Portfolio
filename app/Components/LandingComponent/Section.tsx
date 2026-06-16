@@ -61,9 +61,9 @@ export default function Section({
       <Rightline /> */}
 
       {isOwner && (
-        <div className="fixed top-30 left-10 text-white text-3xl bg-blue-600/20 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer hover:scale-105">
+        <div className="fixed top-25 left-2  z-50  text-white text-md md:text-3xl bg-red-600/20 md:h-12 md:w-12 h-8 w-8 rounded-full flex items-center justify-center cursor-pointer hover:scale-105">
           <LoadingLink href="/Admin/overview">
-            <IoMdReturnLeft />
+            <span className="text-"><IoMdReturnLeft /></span>
           </LoadingLink>
         </div>
       )}
@@ -76,7 +76,7 @@ export default function Section({
         <Hero data={bioData} />
       </div>
 
-      <div id="#project" className="observe-section">
+      <div id="#project" className="observe-section overflow-hidden">
         <Project
           user_id={user_id}
           isOwner={isOwner}

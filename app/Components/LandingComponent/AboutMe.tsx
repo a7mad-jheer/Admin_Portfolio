@@ -12,12 +12,12 @@ export const AboutMe = ({ data }: props) => {
     { id: 2, description: data?.goals ?? "This section will be updated soon. The user hasn't shared their goals yet, but exciting things are coming!" },
   ];
   return (
-    <div className="relative md:my-20 md:py-20 p-5 ">
+    <div className="relative md:my-20 md:py-20  p-5 md:px-20">
       <Title text="About Me" />
 
-      <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  p-10 z-50">
+      <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  p-10 z-50 md:mt-20 ">
 
-      <div className="z-15 flex flex-col md:flex-row justify-center gap-2 md:my-20 my-10">
+      <div className="z-15 flex flex-col md:flex-row justify-center gap-2 md:my-20 my-10 ">
         {aboutData.map((item) => {
           return (
             <p

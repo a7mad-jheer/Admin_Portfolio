@@ -44,9 +44,9 @@ export const Contact = ({userGmail} : props) => {
   };
 
   return (
-    <div className="relative md:my-20 md:py-0 py-10">
+    <div className="relative md:my-20 md:py-0 py-10 md:px-20">
       <Title text="Contact Me" />
-      <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  p-10 z-50">
+      <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  p-10 z-50 md:mt-20">
         <div className="flex flex-col md:flex-row items-center justify-center gap-2">
           <form
             onSubmit={handelSendMess}

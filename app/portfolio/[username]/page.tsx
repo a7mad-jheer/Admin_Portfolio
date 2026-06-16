@@ -69,8 +69,7 @@ export default async function PortfolioPage({ params }: pageProps) {
     );
 
   return (
-    <div>
-      <ParticlesBasic>
+    <div className=" w-full  bg-zinc-900 overflow-hidden px-4">
         <Landing
           user_id={user_id}
           projectsData={projectsData}
@@ -81,7 +80,6 @@ export default async function PortfolioPage({ params }: pageProps) {
           bioData={bioData}
           aboutData={aboutData}
         />
-      </ParticlesBasic>
     </div>
   );
 }

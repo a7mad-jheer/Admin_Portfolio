@@ -48,16 +48,16 @@ export const Project = ({ projectsData, categoriesData }: projectsProps) => {
 
   
   return (
-    <div className=" md:my-20 md:py-20 p-10  ">
+    <div className="mt-20">
       <Title text="My Projects" />
           {categories.map((cat) => {
             return (
-              <div key={cat.id} >
-                <div className="w-full text-cetner">
+              <div key={cat.id} className="">
+                <div className=" text-center ">
                   <Description text={cat.name} />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center  ">
+                <div className="flex flex-col md:flex-row justify-center items-center gap-4 flex-wrap">
                   {projects
                     .filter(
                       (p) =>
@@ -69,6 +69,7 @@ export const Project = ({ projectsData, categoriesData }: projectsProps) => {
                       return (
                         <div
                           key={project.id}
+                          className=""
                         >
                           <CardProject CardData={project} />
                         </div>

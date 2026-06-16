@@ -38,15 +38,15 @@ export const Skills = ({ tecnologyiesData, toolsData }: props) => {
   return (
     <div className="p-5">
       <Title text="Tools & Technologies" />
-      <div className="md:mt-20 ">
-        <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  p-10 z-50">
+      <div className="mt-10 md:mt-20 md:px-20 ">
+        <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  md:p-10 p-5 z-50">
                   <Description text="Technologies I have worked with" />
           <Card data={tecnologies} />
         </div>
       </div>
 
-      <div className="mt-10 md:mt-20">
-        <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  p-10 z-50">
+      <div className="mt-10 md:mt-20 md:px-20">
+        <div className="border-2 shadow-2xl border-blue-950/70 rounded-md  md:p-10 p-5 z-50">
           <Description text="Tools I have worked with" />
           <Card data={tools} />
         </div>

@@ -107,7 +107,7 @@ const handleSendData = async (e: React.FormEvent) => {
     email: signData.email,
     password: signData.password,
     options : {
-      emailRedirectTo : "http://localhost:3000/auth/callback",
+      emailRedirectTo : "https://admin-portfolio-delta-flame.vercel.app/login",
      data : {
       name : signData.name,
       user_name : signData.user_name,
@@ -131,8 +131,16 @@ const handleSendData = async (e: React.FormEvent) => {
     return;
   }
 
-  //here we shoud put email confirm"
-  
+  // //here we shoud put email confirm"
+  // const {data : {user}} = await supabase.auth.getUser();
+  // console.log(user?.email_confirmed_at)
+
+  // if(user?.email_confirmed_at === null) {
+  //   show("Please confirm your email to complete signup.");
+  //   fail();
+  //     router.push(`/verify-Email?email=${signData.email}`);
+  //   return;
+  // }
 
 
   // 6. success flow
@@ -235,7 +243,7 @@ const handleSendData = async (e: React.FormEvent) => {
             <button 
             type="submit"
              disabled={status.loading}
-            className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-full w-fit hover:blue-700">
+            className="text-white bg-blue-500/60 py-2 px-8 m-auto mt-5 rounded-md w-fit hover:blue-700">
               {status.loading ? "wait..." : "Sign Up"}
               </button>
           

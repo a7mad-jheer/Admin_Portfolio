@@ -234,7 +234,7 @@ export default function Login() {
           animate="show"
           className="bg-black/50  rounded-md p-5 md:w-1/2"
         >
-          <h1 className="text-white/90 text-center text-2xl font-semibold">
+          <h1 className="text-white/90 text-center text-2xl font-semibold ">
             Login Now
           </h1>
           <form
@@ -263,7 +263,7 @@ export default function Login() {
             />
               <button
                 type="submit"
-                className="text-white bg-blue-500/60 py-2 px-8 mt-5 rounded-full w-fit hover:blue-700 cursor-pointer hover:scale-105 transition"
+                className="text-white bg-blue-500/60 py-2 px-8 mt-5 rounded-md w-fit hover:blue-700 cursor-pointer hover:scale-105 transition m-auto"
               >
                 {status.loading ? "wait..." : "Login Now"}
               </button>
