@@ -1,5 +1,5 @@
 "use client";
-import {motion} from "framer-motion"
+import {LazyMotion , domAnimation , m} from "framer-motion"
 const feature = [
   { id: 0, name: "SEO Optimization", icon: "⚡" , descripiton : "Rank your portfolio higher on Google and get discovered by recruiters easily."},
   { id: 1, name: "Admin Panel", icon: "🧠" , descripiton : "Easily manage your projects, skills, and content from a simple dashboard."},
@@ -22,28 +22,29 @@ export const MainFeature = () => {
         show : {opacity: 1 , y : 0}
     }
   return (
-    <motion.div
+    <LazyMotion features={domAnimation}>
+    <m.div
         variants = {container}
         initial="hidden"
         whileInView="show"
         viewport={{once:true}}
         className="min-h-screen flex flex-col items-center justify-center px-6 py-20 gap-12">
-      <motion.h1
+      <m.h1
         variants = {item}
         className="text-3xl xl:text-6xl leading-tight max-w-2xl font-bold mb-2 drop-shadow-[0_0_20px_rgba(0,130,246,.5)] bg-gradient-to-b from-white/70 to-white via-white/80 bg-clip-text text-transparent text-center">
         Powerful Features  Everything you need to build a <span className="text-blue-600/60">portfolio</span> faster
-      </motion.h1>
+      </m.h1>
 
-      <motion.p 
+      <m.p 
         variants = {item}
         className="text-gray-400 text-center max-w-xl">
         Create a professional portfolio in minutes with SEO optimization, fast performance, and a powerful admin dashboard.
-      </motion.p>
+      </m.p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl justify-items-center">
         {feature.map((f) => {
           return (
-            <motion.div
+            <m.div
                 variants={item}
               key={f.id}
               className="group md:col-span-1 relative p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl
@@ -58,11 +59,12 @@ export const MainFeature = () => {
                   {f.descripiton}
                 </p>
               </div>
-            </motion.div>
+            </m.div>
           );
         })}
       </div>
-    </motion.div>
+    </m.div>
+    </LazyMotion>
   );
 };
 
