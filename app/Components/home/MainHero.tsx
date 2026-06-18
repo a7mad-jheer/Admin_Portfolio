@@ -10,13 +10,13 @@ export const MainHero = () => {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: 0.4,
+        staggerChildren: 0.15,
       },
     },
   };
 
   const item = {
-    hidden: { opacity: .2, y: -100 },
+    hidden: { opacity: .2, y: -20 },
     show: { opacity: 1, y: 0 },
   };
 
