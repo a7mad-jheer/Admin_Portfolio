@@ -1,11 +1,13 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 import Image from "next/image";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+// import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { useEffect, useState } from "react";
+import type { SwiperModule } from "swiper/types";
+
 
 const imagePreview = [
   "profile.png",
@@ -17,6 +19,15 @@ const imagePreview = [
 ];
 
 export const SliderPreview = () => {
+  const [swiper , setSwiper] = useState<SwiperModule[]>([])
+
+
+  useEffect(() => {
+    import("swiper/modules").then((mod) => {
+      setSwiper([mod.Autoplay , mod.Pagination , mod.Navigation])
+    })
+  },[])
+  
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center gap-8 px-5 w-full ">
       <h1 className="text-3xl xl:text-6xl leading-tight max-w-xl font-bold mb-2 drop-shadow-[0_0_20px_rgba(0,130,246,.5)] bg-gradient-to-b from-white/70 to-white via-white/80 bg-clip-text text-transparent text-center">
@@ -25,7 +36,8 @@ export const SliderPreview = () => {
 
       <div className="relative w-full border-10 shadow-xl shadow-blue-500 border-blue-600/20 rounded-3xl overflow-hidden ">
         <Swiper
-          modules={[Autoplay, Pagination, Navigation]}
+        key={swiper.length}
+          modules={swiper}
           spaceBetween={20}
           slidesPerView={1}
           autoplay={{ delay: 4000 }}
