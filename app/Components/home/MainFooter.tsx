@@ -3,7 +3,7 @@ import { FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 import { PiGithubLogoFill } from "react-icons/pi";
 import Logo from "../global/Logo";
 
-const MainFooter = () => {
+export const MainFooter = () => {
   const contactMethods = [
     {
       id: 0,

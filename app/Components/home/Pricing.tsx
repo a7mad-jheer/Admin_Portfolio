@@ -27,7 +27,7 @@ const plans = [
 
 ]
 
-const Pricing = () => {
+export const Pricing = () => {
   return (
     <div className="min-h-screen px-6 flex flex-col justify-center items-center gap-12">
       <div className="text-center space-y-6 max-w-2xl">
