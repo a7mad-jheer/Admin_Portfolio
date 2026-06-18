@@ -5,7 +5,7 @@ import { LoadingLink } from "../global/LoadingLink";
 
 // const MotionLink = motion(LoadingLink)
 
-// const MainHero = () => {
+const MainHero = () => {
 //   const container = {
 //     hidden: {},
 //     show: {
@@ -59,7 +59,7 @@ import { LoadingLink } from "../global/LoadingLink";
         Get Start
       </LoadingLink>
     </div>
-
+   )}
   
   // return (
   //   <motion.div
@@ -106,7 +106,5 @@ import { LoadingLink } from "../global/LoadingLink";
   //       Get Start
   //     </MotionLink>
   //   </motion.div>
-  );
-};
 
 export default MainHero;
