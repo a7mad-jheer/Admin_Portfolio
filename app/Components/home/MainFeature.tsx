@@ -12,13 +12,13 @@ export const MainFeature = () => {
         hidden : {},
         show : {
             transition : {
-                staggerChildren : 0.4,
+                staggerChildren : 0.15,
             }
         }
     }
 
     const item = {
-        hidden : {opacity : 0 , y : -100},
+        hidden : {opacity : 0 , y : -20},
         show : {opacity: 1 , y : 0}
     }
   return (
