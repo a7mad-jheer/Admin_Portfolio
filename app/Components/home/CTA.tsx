@@ -1,7 +1,7 @@
 "use client"
 import { LoadingLink } from "../global/LoadingLink";
 
-export const CTA = () => {
+const CTA = () => {
     return (
         <div className="min-h-screen flex items-center justify-center px-6 mb-40 ">
          

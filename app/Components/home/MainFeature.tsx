@@ -6,7 +6,7 @@ const feature = [
   { id: 2, name: "Fast Performance", icon: "🚀" , descripiton : "Lightning-fast loading with optimized server-side rendering for better user experience."},
 ];
 
-export const MainFeature = () => {
+const MainFeature = () => {
 
     const container = {
         hidden : {},

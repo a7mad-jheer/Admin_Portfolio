@@ -2,7 +2,7 @@
 import Logo from "../global/Logo";
 import { LoadingLink } from "../global/LoadingLink";
 
-export const MainHeader = () => {
+const MainHeader = () => {
   return (
     <div className="fixed flex items-center justify-between top-0 left-0 px-6 h-16 bg-black/40 backdrop-blur-md border-b border-white/10 w-full z-50 shadow-md shadow-white/10">
       <Logo/>

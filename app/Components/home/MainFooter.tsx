@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { BiLogoGmail } from "react-icons/bi";
 import { FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 import { PiGithubLogoFill } from "react-icons/pi";

@@ -16,7 +16,7 @@ const imagePreview = [
   "contactMe.png"
 ];
 
-export const SliderPreview = () => {
+const SliderPreview = () => {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center gap-8 px-5 w-full ">
       <h1 className="text-3xl xl:text-6xl leading-tight max-w-xl font-bold mb-2 drop-shadow-[0_0_20px_rgba(0,130,246,.5)] bg-gradient-to-b from-white/70 to-white via-white/80 bg-clip-text text-transparent text-center">

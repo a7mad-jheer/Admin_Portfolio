@@ -5,7 +5,7 @@ import { LoadingLink } from "../global/LoadingLink";
 
 const MotionLink = motion(LoadingLink)
 
-export const MainHero = () => {
+const MainHero = () => {
   const container = {
     hidden: {},
     show: {
