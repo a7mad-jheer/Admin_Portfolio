@@ -17,7 +17,7 @@ const MainFooter = dynamic(() => (import("./MainFooter")).then((mod) => mod.Main
 export const HomeClient = () => {
     return (
          <>
-         <SliderPreview />
+            <SliderPreview />
             <MainFeature/>
             <Pricing />
             <CTA/>
