@@ -1,11 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { ParticlesBasic } from "../Components/global";
 import z from "zod";
 import { LoginSchema } from "@/Schema/authSchema";
 import ErrorSchema from "../(Admin)/components/Error/ErrorSchema";
-import { motion, easeOut } from "framer-motion";
+import {LazyMotion , domAnimation , m , easeOut } from "framer-motion";
 import { IoMdReturnRight } from "react-icons/io";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
@@ -14,8 +13,10 @@ import { supabase } from "@/lib/supabase";
 import { useInsertData } from "@/hook/api/useInsertData";
 import { useSelectData } from "@/hook/api/useSelectData";
 import { useRouter } from "next/navigation";
-import { LoadingLink } from "../Components/global/LoadingLink";
 import { useLoading } from "@/hook/ui/useLoading";
+import dynamic from "next/dynamic";
+
+const ParticlesBasic = dynamic(() => import ("../Components/global").then((mod) => mod.ParticlesBasic), { ssr: false });
 
 type LoginData_Type = {
   email: string | null;
@@ -27,14 +28,14 @@ type loginInfer = z.infer<typeof LoginSchema>;
 const container = {
   hidden: {},
   show: {
-    transotion: {
-      staggerChildren: 0.4,
+    transition: {
+      staggerChildren: 0.15,
     },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: -50 },
+  hidden: { opacity: .6, y: -20 },
   show: {
     opacity: 1,
     y: 0,
@@ -46,7 +47,7 @@ const item = {
 };
 
 const form = {
-  hidden: { opacity: 0, x: 100 },
+  hidden: { opacity: .6, x: 50 },
   show: {
     opacity: 1,
     x: 0,
@@ -88,6 +89,7 @@ export default function Login() {
       result.error.issues.forEach((err) => {
         fieldError[err.path[0] as keyof loginInfer] = err.message;
       });
+      setErrorSchema(fieldError);
       return;
     }
     setErrorSchema({});
@@ -142,8 +144,8 @@ export default function Login() {
     }
 
     if (!user) {
-      return router.replace("/login");
       setLoading(false);
+      return router.replace("/login");
     }
 
     const { data: profileData, error: profileError } = await selectWithSingle(
@@ -156,12 +158,11 @@ export default function Login() {
       fail();
       setLoading(false);
       show("Failed to retrieve user profile. Please try again.");
-      setLoading(false);
       return;
     }
 
     if (!profileData) {
-      const { data, error } = await insertData("profile", {
+      const {  error } = await insertData("profile", {
         user_id: user.id,
         name: user.user_metadata.name,
         user_name: user.user_metadata.user_name,
@@ -192,56 +193,59 @@ export default function Login() {
   };
 
   return (
-    <ParticlesBasic>
+      <LazyMotion features={domAnimation}>
       {message && <ToastError message={message} />}
       <div className=" h-screen flex flex-col items-center justify-center ">
+
+        {/* use ParticlesBasic here inside div because we need to improve the performance and reduse the mainTheard js */}
+        <div className="w-full h-screen absolute inset-0 z-0">
+          <ParticlesBasic >
+            <div className="w-full h-screen"/>
+          </ParticlesBasic>
+        </div>
+
         <div className="absolute top-5 right-5 text-white text-3xl bg-blue-600/20 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer hover:scale-105">
           <Link href="/">
             <IoMdReturnRight />
           </Link>
         </div>
 
-        <motion.div
+        <m.div
           variants={container}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
+          animate="show"
           className="relative text-white text-center space-y-4 mb-10 "
         >
-          <motion.h1
+          <m.h2
             variants={item}
-            initial="hidden"
-            animate="show"
             className="font-semibold text-3xl max-w-md md:max-w-lg  "
           >
-            Welecome back
-          </motion.h1>
+            Welcome back
+          </m.h2>
 
-          <motion.p
+          <m.p
             variants={item}
-            initial="hidden"
-            animate="show"
             className="text-sm text-gray-400 max-w-xs m-auto md:max-w-lg "
           >
             Continue building and managing your portfolio in seconds.
-          </motion.p>
+          </m.p>
           <div className="absolute inset-0 shadow-md shadow-blue-600 bg-blue-600/20 blur-2xl" />
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           variants={form}
           initial="hidden"
           animate="show"
           className="bg-black/50  rounded-md p-5 md:w-1/2"
         >
-          <h1 className="text-white/90 text-center text-2xl font-semibold ">
+          <h2 className="text-white/90 text-center text-2xl font-semibold ">
             Login Now
-          </h1>
+          </h2>
           <form
             onSubmit={handleLogin}
             className=" flex flex-col gap-2 p-5 rounded-xl"
           >
-            <ErrorSchema errorSchema={errorSchema.email!} />
+            {errorSchema.email && (<ErrorSchema errorSchema={errorSchema.email!} />)}
             <input
               value={loginData.email!}
               onChange={(e) =>
@@ -251,7 +255,7 @@ export default function Login() {
               placeholder="Enter Your Email.."
               className="bg-gray-400/30  text-white p-2  rounded-md outline-none"
             />
-            <ErrorSchema errorSchema={errorSchema.password!} />
+            {errorSchema.password && (<ErrorSchema errorSchema={errorSchema.password!} />)}
             <input
               value={loginData.password!}
               onChange={(e) =>
@@ -278,8 +282,8 @@ export default function Login() {
               </Link>
             </p>
           </form>
-        </motion.div>
+        </m.div>
       </div>
-    </ParticlesBasic>
+      </LazyMotion>
   );
 }
