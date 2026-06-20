@@ -1,33 +1,34 @@
 "use client"
 import { useState } from "react";
-import { ParticlesBasic } from "../Components/global";
 import Link from "next/link";
 import z from "zod";
 import { SignupSchema } from "@/Schema/authSchema";
 import { supabase } from "@/lib/supabase";
 import ErrorSchema from "../(Admin)/components/Error/ErrorSchema";
 import ToastError from "../(Admin)/components/Error/ToastError";
-import { motion , easeOut } from "framer-motion";
+import { m , LazyMotion , domAnimation , easeOut } from "framer-motion";
 import { IoMdReturnRight } from "react-icons/io";
 import { useReqStatus } from "@/hook/ui/useReqStatus";
 import { useToast } from "@/hook/ui/useToast";
-import { useInsertData } from "@/hook/api/useInsertData";
 import { useRouter } from "next/navigation";
 import { LoadingLink } from "../Components/global/LoadingLink";
 import { useLoading } from "@/hook/ui/useLoading";
+import dynamic from "next/dynamic";
+
+const ParticlesBasic = dynamic(() => import("../Components/global/ParticlesBasic").then((mod) => mod.ParticlesBasic), {ssr : false});
 
 
 const container = {
   hidden : {},
   show : {
     transition : {
-      staggerChildren : 0.4,
+      staggerChildren : .16,
     },
   }
 }
 
 const item = {
-  hidden : {opacity : 0 , y : -50},
+  hidden : {opacity : .2 , y : -20},
   show : {opacity : 1 , y : 0 , 
     transition : {
       duration : 0.4 ,
@@ -37,10 +38,10 @@ const item = {
 }
 
 const form = {
-  hidden : {opacity : 0 , x : 100},
-  show : {opacity : 1 , x:0 ,
+  hidden : {opacity : .2 , x : 50},
+  show : {opacity : 1 , x : 0 ,
     transition : {
-      duration : 0.4 ,
+      duration : 0.15 ,
       ease : easeOut,
     }
   }
@@ -72,7 +73,6 @@ export default  function Signup() {
   /*api opertations */
   const {status , loading , success , fail} = useReqStatus();
   const {show , message} = useToast();
-  const {insertData} = useInsertData();
   /*api opertations */
 
 
@@ -167,6 +167,7 @@ const handleSendData = async (e: React.FormEvent) => {
 
 
   return (
+    <LazyMotion features={domAnimation}>
     <ParticlesBasic>
     <div className=" h-screen flex flex-col items-center justify-center  w-full">
     {message && <ToastError message={message}/>}
@@ -175,27 +176,27 @@ const handleSendData = async (e: React.FormEvent) => {
         <Link href="/"><IoMdReturnRight/></Link>  
       </div>
 
-      <motion.div 
+      <m.div 
         variants = {container}
         initial = "hidden"
         whileInView="show"
         viewport = {{once : true}}
         className="relative text-white text-center space-y-4 mb-10 ">
-        <motion.h1
+        <m.h1
           variants={item}
           initial="hidden"
           animate="show"
-          className="font-semibold text-3xl max-w-md md:max-w-lg  ">Create your portfolio in minutes.</motion.h1>
+          className="font-semibold text-3xl max-w-md md:max-w-lg  ">Create your portfolio in minutes.</m.h1>
 
-        <motion.p 
+        <m.p 
           variants={item}
                     initial="hidden"
           animate="show"
-          className="text-sm text-gray-400 max-w-xs m-auto md:max-w-lg ">No coding. No hassle. Just add your projects and go live instantly.</motion.p>
+          className="text-sm text-gray-400 max-w-xs m-auto md:max-w-lg ">No coding. No hassle. Just add your projects and go live instantly.</m.p>
         <div className="absolute inset-0 shadow-md shadow-blue-600 bg-blue-600/20 blur-2xl"/>
-      </motion.div>
+      </m.div>
 
-      <motion.div 
+      <m.div 
           variants = {form}
           initial="hidden"
           animate="show"
@@ -250,8 +251,9 @@ const handleSendData = async (e: React.FormEvent) => {
 
             <LoadingLink posthogText = "signUptoIn_Clicked" href="/login" styleLoading="text-blue-800 text-xs text-center underline">Go to login page</LoadingLink>
         </form>
-      </motion.div>
+      </m.div>
     </div>
     </ParticlesBasic>
+    </LazyMotion>
   );
 }
