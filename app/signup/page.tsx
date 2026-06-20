@@ -27,13 +27,13 @@ const container = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.4,
+      staggerChildren: 0.15,
     },
   },
 };
 
 const item = {
-  hidden: { opacity: 0.2, y: -20 },
+  hidden: { opacity: 0.6, y: -20 },
   show: {
     opacity: 1,
     y: 0,
