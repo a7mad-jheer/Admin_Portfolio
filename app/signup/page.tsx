@@ -172,7 +172,7 @@ export default function Signup() {
   return (
     <LazyMotion features={domAnimation}>
       
-        <div className="relative h-screen flex flex-col items-center justify-center  w-full">
+        <div className="relative h-screen w-full flex flex-col items-center justify-center  ">
           {message && <ToastError message={message} />}
 
               <div className="w-full h-screen absolute inset-0 z-0">
@@ -214,7 +214,7 @@ export default function Signup() {
             variants={form}
             initial="hidden"
             animate="show"
-            className="relative bg-black/50  rounded-md p-5 xl:w-1/2"
+            className="relative bg-black/50  rounded-md px-5 xl:w-1/3 py-10"
           >
             <h2 className="text-white/90 text-center text-2xl font-semibold">
               Signup Now
