@@ -171,9 +171,15 @@ export default function Signup() {
 
   return (
     <LazyMotion features={domAnimation}>
-      <ParticlesBasic>
-        <div className=" h-screen flex flex-col items-center justify-center  w-full">
+      
+        <div className="relative h-screen flex flex-col items-center justify-center  w-full">
           {message && <ToastError message={message} />}
+
+              <div className="w-full h-screen absolute inset-0 z-0">
+                <ParticlesBasic >
+                  <div className="w-full h-screen"/>
+                </ParticlesBasic>
+              </div>
 
           <div className="absolute top-5 right-5 text-white text-3xl bg-blue-600/20 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer hover:scale-105">
             <Link href="/">
@@ -208,7 +214,7 @@ export default function Signup() {
             variants={form}
             initial="hidden"
             animate="show"
-            className="bg-black/50  rounded-md p-5 xl:w-1/2"
+            className="relative bg-black/50  rounded-md p-5 xl:w-1/2"
           >
             <h2 className="text-white/90 text-center text-2xl font-semibold">
               Signup Now
@@ -216,7 +222,7 @@ export default function Signup() {
 
             <form
               onSubmit={handleSendData}
-              className=" flex flex-col gap-2 p-5 rounded-xl "
+              className="flex flex-col gap-2 p-5 rounded-xl "
             >
               {errorSchema.name && (
                 <ErrorSchema errorSchema={errorSchema.name} />
@@ -291,7 +297,6 @@ export default function Signup() {
             </form>
           </m.div>
         </div>
-      </ParticlesBasic>
     </LazyMotion>
   );
 }
