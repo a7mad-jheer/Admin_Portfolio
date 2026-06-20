@@ -236,7 +236,7 @@ export default function Login() {
           variants={form}
           initial="hidden"
           animate="show"
-          className="bg-black/50  rounded-md p-5 md:w-1/2"
+          className="relative bg-black/50  rounded-md p-5 md:w-1/3"
         >
           <h2 className="text-white/90 text-center text-2xl font-semibold ">
             Login Now
