@@ -3,31 +3,26 @@ import { FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 import { PiGithubLogoFill } from "react-icons/pi";
 import Logo from "../global/Logo";
 
-export const MainFooter = () => {
-  const contactMethods = [
+const contactMethods = [
     {
-      id: 0,
       name: "whatsapp",
       href: "https://wa.me/972597752547",
       icon: FaWhatsapp,
       hover: "hover:text-green-500",
     },
     {
-      id: 1,
       name: "gmail",
       href: "mailto:ahmedjj800@gmail.com",
       icon: BiLogoGmail,
       hover: "hover:text-red-500",
     },
     {
-      id: 2,
       name: "linkedin",
       href: "https://www.linkedin.com/in/ahmed-jheer-179931337/",
       icon: FaLinkedinIn,
       hover: "hover:text-blue-500",
     },
     {
-      id: 3,
       name: "github",
       href: "https://github.com/a7mad-jheer",
       icon: PiGithubLogoFill,
@@ -35,6 +30,9 @@ export const MainFooter = () => {
     },
   ];
 
+
+export const MainFooter = () => {
+  
   const year = new Date().getFullYear();
 
   return (
@@ -57,7 +55,7 @@ export const MainFooter = () => {
           {contactMethods.map((method) => {
             return (
               <a
-                key={method.id}
+                key={method.name}
                 href={method.href}
                 target="_blank"
                 rel="noopener noreferrer"

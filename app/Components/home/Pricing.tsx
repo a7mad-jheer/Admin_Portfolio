@@ -31,9 +31,9 @@ export const Pricing = () => {
   return (
     <div className="min-h-screen px-6 flex flex-col justify-center items-center gap-12">
       <div className="text-center space-y-6 max-w-2xl">
-        <h1 className="text-white text-4xl font-bold">
+        <h2 className="text-white text-4xl font-bold">
           Simple pricing for your career growth
-        </h1>
+        </h2>
         <p className="text-base text-gray-400 font-semibold max-w-md m-auto">
           Try it for Free. If you like it, unlock full access with a simple
           subscription.
@@ -48,7 +48,7 @@ export const Pricing = () => {
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 shadow-[0_0_30px_rgba(59,130,246,0.3)] transition bg-gradient-to-r from-blue-600/10 to-purple-600/10"/>
         
           <div className="flex flex-col justify-between h-full ">
-            <h1 className="text-white text-xl text-center font-semibold border-b border-gray-700 py-3">{p.title}</h1>
+            <h3 className="text-white text-xl text-center font-semibold border-b border-gray-700 py-3">{p.title}</h3>
            
           <ul className="px-5 py-3 space-y-3 text-gray-400 text-sm h-full">
              {p.feature.map((f , index) =>{

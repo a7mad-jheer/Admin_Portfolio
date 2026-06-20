@@ -1,6 +1,7 @@
+"use client"
 import dynamic from "next/dynamic";
 
-const Particles = dynamic(() => import("@/config/components/ui/shadcn-io/particles").then((mod) => mod.Particles))
+const Particles = dynamic(() => import("@/config/components/ui/shadcn-io/particles").then((mod) => mod.Particles), {ssr : false})
 
 export  function ParticlesBasic({children} : {children:React.ReactNode}) {
   return (

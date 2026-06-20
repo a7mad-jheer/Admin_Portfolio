@@ -7,7 +7,7 @@ export const CTA = () => {
          
          <div className="relative text-center space-y-6 gap-6 max-w-2xl">
                 <div className="absolute inset-0 bg-blue-500/10 blur-3xl"/>
-               <h1 className="text-white text-4xl font-bold">Ready to build your SaaS?</h1>
+               <h2 className="text-white text-4xl font-bold">Ready to build your SaaS?</h2>
 
                <p className="text-base text-gray-400 font-semibold ">Start building your website in 5 minutes with power full tools, modren design and scalable architecture.</p>
 

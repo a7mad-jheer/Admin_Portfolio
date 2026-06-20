@@ -1,11 +1,11 @@
 "use client";
-import { FaStar } from "react-icons/fa";
 import { LoadingLink } from "../global/LoadingLink";
 import {LazyMotion, domAnimation , m} from "framer-motion";
+import { FaStar } from "react-icons/fa";
+
 
 const MotionLink = m(LoadingLink)
 
-export const MainHero = () => {
   const container = {
     hidden: {},
     show: {
@@ -21,7 +21,7 @@ export const MainHero = () => {
   };
 
 
-  
+export const MainHero = () => {  
   return (
     <LazyMotion features={domAnimation}>
     <m.div

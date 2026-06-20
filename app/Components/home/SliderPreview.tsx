@@ -19,12 +19,12 @@ const imagePreview = [
 ];
 
 export const SliderPreview = () => {
-  const [swiper , setSwiper] = useState<SwiperModule[]>([])
+  const [modules , setModule] = useState<SwiperModule[]>([])
 
 
   useEffect(() => {
     import("swiper/modules").then((mod) => {
-      setSwiper([mod.Autoplay , mod.Pagination , mod.Navigation])
+      setModule([mod.Autoplay , mod.Pagination , mod.Navigation])
     })
   },[])
   
@@ -35,9 +35,9 @@ export const SliderPreview = () => {
       </h1>
 
       <div className="relative w-full border-10 shadow-xl shadow-blue-500 border-blue-600/20 rounded-3xl overflow-hidden ">
-        <Swiper
-        key={swiper.length}
-          modules={swiper}
+        {modules.length > 0 && (
+          <Swiper
+          modules={modules}
           spaceBetween={20}
           slidesPerView={1}
           autoplay={{ delay: 4000 }}
@@ -48,7 +48,7 @@ export const SliderPreview = () => {
             return (
               <SwiperSlide key={index}>
                 <div className="relative h-120 w-full ">
-                  <Image alt="" fill src={`/${url}`} className="object-cover" />
+                  <Image alt={`Portfolio preview - ${url.replace('.png', '')}`} fill src={`/${url}`} className="object-cover" />
                 </div>
               </SwiperSlide>
             );
@@ -56,6 +56,7 @@ export const SliderPreview = () => {
 
           <div className="absolute inset-0 shadow-2xl shadow-blue-600  " />
         </Swiper>
+        )}
       </div>
     </div>
   );
