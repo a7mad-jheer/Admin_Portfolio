@@ -1,4 +1,6 @@
-import { Particles } from "@/config/components/ui/shadcn-io/particles";
+import dynamic from "next/dynamic";
+
+const Particles = dynamic(() => import("@/config/components/ui/shadcn-io/particles").then((mod) => mod.Particles))
 
 export  function ParticlesBasic({children} : {children:React.ReactNode}) {
   return (
