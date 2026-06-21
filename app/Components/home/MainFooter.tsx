@@ -36,7 +36,7 @@ export const MainFooter = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="px-6 py-8 absolute bottom-0 left-0 w-full bg-black/40 backdrop-blur-md border-t border-white/10 shadow-md shadow-white/10 text-white">
+    <footer className="px-6 py-8 relative bottom-0 left-0 w-full bg-black/40 backdrop-blur-md border-t border-white/10 shadow-md shadow-white/10 text-white">
       
       {/* Logo Section */}
       <div className="flex flex-col items-center text-center">

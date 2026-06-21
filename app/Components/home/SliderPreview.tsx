@@ -30,9 +30,9 @@ export const SliderPreview = () => {
   
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center gap-8 px-5 w-full ">
-      <h1 className="text-3xl xl:text-6xl leading-tight max-w-xl font-bold mb-2 drop-shadow-[0_0_20px_rgba(0,130,246,.5)] bg-gradient-to-b from-white/70 to-white via-white/80 bg-clip-text text-transparent text-center">
-        How Your <span className="text-blue-600/60">Portfolio</span> Will Look
-      </h1>
+      <h2 className="text-3xl xl:text-6xl leading-tight max-w-xl font-bold mb-2 drop-shadow-[0_0_20px_rgba(0,130,246,.5)] bg-gradient-to-b from-white/70 to-white via-white/80 bg-clip-text text-transparent text-center">
+        How your <span className="text-blue-600/60">Portfolio</span> will look
+      </h2>
 
       <div className="relative w-full border-10 shadow-xl shadow-blue-500 border-blue-600/20 rounded-3xl overflow-hidden ">
         {modules.length > 0 && (
